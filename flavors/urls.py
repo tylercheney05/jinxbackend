@@ -1,6 +1,8 @@
 from rest_framework import routers
-from flavors.views import FlavorViewSet
+
+from flavors.views import FlavorGroupViewSet, FlavorViewSet
 
 router = routers.DefaultRouter()
-router.register('', FlavorViewSet, basename='flavors')
+router.register("groups", FlavorGroupViewSet, basename="flavor-groups")
+router.register("", FlavorViewSet, basename="flavors")
 urlpatterns = router.urls
