@@ -1,4 +1,7 @@
 from django.db import models
+from django.db.models import F, Sum
+
+from cups.models import Cup
 
 
 class MenuItem(models.Model):
@@ -9,6 +12,20 @@ class MenuItem(models.Model):
 
     def __str__(self):
         return self.name
+
+    @property
+    def cup_prices(self):
+        cup_prices = dict()
+        for cup in Cup.objects.all():
+            cup_price = cup.price
+            price = self.flavors.annotate(
+                quantity_price=(F("quantity") * cup.conversion_factor)
+                * F("flavor__flavor_group__price")
+            ).aggregate(total_sum_product=Sum("quantity_price"))
+            cup_prices[cup.get_size_display()] = cup_price + price.get(
+                "total_sum_product", 0
+            )
+        return cup_prices
 
 
 class MenuItemFlavor(models.Model):

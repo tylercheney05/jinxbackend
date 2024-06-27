@@ -23,10 +23,18 @@ class MenuItemSerializer(serializers.ModelSerializer):
     )
     flavors = MenuItemFlavorSerializer(many=True, read_only=True)
     soda__name = serializers.CharField(source="soda.name", read_only=True)
+    cup_prices = serializers.DictField(read_only=True)
 
     class Meta:
         model = MenuItem
-        fields = ["name", "soda", "soda__name", "flavors", "menu_item_flavors"]
+        fields = [
+            "name",
+            "soda",
+            "soda__name",
+            "flavors",
+            "menu_item_flavors",
+            "cup_prices",
+        ]
 
     def create(self, validated_data):
         flavors = validated_data.pop("menu_item_flavors")

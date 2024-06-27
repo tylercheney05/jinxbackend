@@ -19,6 +19,7 @@ class FlavorGroup(models.Model):
 
     name = models.CharField(max_length=200)
     uom = models.CharField(max_length=10, choices=uom_choices)
+    price = models.DecimalField(max_digits=5, decimal_places=2)
 
     def __str__(self):
         return self.name

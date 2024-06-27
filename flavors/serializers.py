@@ -4,9 +4,14 @@ from flavors.models import Flavor, FlavorGroup
 
 
 class FlavorGroupSerializer(serializers.ModelSerializer):
+    uom__display = serializers.SerializerMethodField(read_only=True)
+
     class Meta:
         model = FlavorGroup
-        fields = ["name", "uom"]
+        fields = ["name", "uom", "uom__display", "price"]
+
+    def get_uom__display(self, obj):
+        return obj.get_uom_display()
 
 
 class FlavorSerializer(serializers.ModelSerializer):
