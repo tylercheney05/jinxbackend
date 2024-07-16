@@ -16,6 +16,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 
 load_dotenv()
+
 import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -26,7 +27,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get("SECRET_KEY")
+SECRET_KEY = str(os.environ.get("SECRET_KEY"))
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True if os.environ["NODE_ENV"] == "development" else False
@@ -44,13 +45,17 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
+    "rest_framework_simplejwt",
     "django_extensions",
+    "django_filters",
+    "cuser",
     "core",
     "users",
     "sodas",
     "flavors",
     "menuitems",
     "cups",
+    "orders",
 ]
 
 MIDDLEWARE = [
@@ -61,6 +66,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "cuser.middleware.CuserMiddleware",
 ]
 
 ROOT_URLCONF = "jinxbackend.urls"
@@ -141,12 +147,16 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework_simplejwt.authentication.JWTAuthentication",
-    ]
+    ],
+    "DEFAULT_FILTER_BACKENDS": [
+        "django_filters.rest_framework.DjangoFilterBackend",
+    ],
 }
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFTEIME": timedelta(days=1),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+    "SIGNING_KEY": SECRET_KEY,
 }
 
 AUTH_USER_MODEL = "users.User"

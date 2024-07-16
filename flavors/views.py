@@ -32,5 +32,5 @@ class FlavorViewSet(
     serializer_class = FlavorSerializer
     autocomplete_fields = ["id", "name"]
     filter_backends = [filters.OrderingFilter]
-    ordering_fields = ["flavor_group__name"]
-    ordering = ["flavor_group__name"]
+    ordering_fields = ["flavor_group__name", "name"]
+    ordering = ["flavor_group__name", "name"]

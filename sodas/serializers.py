@@ -5,5 +5,5 @@ from sodas.models import Soda
 
 class SodaSerializer(serializers.ModelSerializer):
     class Meta:
-        fields = ["name"]
+        fields = ["id", "name"]
         model = Soda

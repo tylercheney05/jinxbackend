@@ -8,7 +8,8 @@ class CupSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Cup
-        fields = ["size", "size__display", "price", "conversion_factor"]
+        fields = ["id", "size", "size__display", "price", "conversion_factor"]
+        read_only_fields = ["id"]
 
     def get_size__display(self, obj):
         return obj.get_size_display()

@@ -15,15 +15,20 @@ class MenuItem(models.Model):
 
     @property
     def cup_prices(self):
-        cup_prices = dict()
+        cup_prices = list()
         for cup in Cup.objects.all():
             cup_price = cup.price
             price = self.flavors.annotate(
                 quantity_price=(F("quantity") * cup.conversion_factor)
                 * F("flavor__flavor_group__price")
             ).aggregate(total_sum_product=Sum("quantity_price"))
-            cup_prices[cup.get_size_display()] = cup_price + price.get(
-                "total_sum_product", 0
+            cup_prices.append(
+                {
+                    "id": cup.id,
+                    "size": cup.size,
+                    "size__display": cup.get_size_display(),
+                    "price": cup_price + price.get("total_sum_product", 0),
+                }
             )
         return cup_prices
 
