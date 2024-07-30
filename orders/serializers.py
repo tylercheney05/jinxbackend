@@ -1,5 +1,6 @@
 from rest_framework import serializers
 
+from locations.models import Location
 from menuitems.models import MenuItem
 from orders.models import Order, OrderItem
 
@@ -21,6 +22,9 @@ class OrderItemSerializer(serializers.ModelSerializer):
         source="order.completed_by", read_only=True
     )
     price = serializers.SerializerMethodField(read_only=True)
+    order__location = serializers.PrimaryKeyRelatedField(
+        source="order.location", write_only=True, queryset=Location.objects.all()
+    )
 
     class Meta:
         model = OrderItem
@@ -32,6 +36,7 @@ class OrderItemSerializer(serializers.ModelSerializer):
             "menu_item__name",
             "order__completed_by",
             "price",
+            "order__location",
         ]
 
     def get_price(self, obj):
@@ -48,10 +53,13 @@ class OrderItemSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         menu_item_id = validated_data.pop("menu_item")
+        order = validated_data.pop("order")
+        location = order.get("location")
 
         order, _ = Order.objects.get_or_create(
             completed_by=self.context["request"].user,
             is_paid=False,
+            location=location,
         )
         content_object = MenuItem.objects.get(id=menu_item_id)
         order_item = OrderItem(

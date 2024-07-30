@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     "menuitems",
     "cups",
     "orders",
+    "locations",
 ]
 
 MIDDLEWARE = [
@@ -154,7 +155,7 @@ REST_FRAMEWORK = {
 }
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFTEIME": timedelta(days=1),
+    "ACCESS_TOKEN_LIFTEIME": timedelta(hours=1),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
     "SIGNING_KEY": SECRET_KEY,
 }

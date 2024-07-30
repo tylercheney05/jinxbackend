@@ -12,6 +12,11 @@ class Order(models.Model):
         on_delete=models.PROTECT,
     )
     is_paid = models.BooleanField(default=False)
+    location = models.ForeignKey(
+        "locations.Location",
+        on_delete=models.CASCADE,
+        related_name="orders",
+    )
 
     def __str__(self):
         return f"Order {self.id} - {self.date}"
