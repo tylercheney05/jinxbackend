@@ -26,6 +26,7 @@ class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="items")
     cup = models.ForeignKey("cups.Cup", on_delete=models.CASCADE)
     zero_sugar = models.BooleanField(default=False)
+    note = models.TextField(blank=True, default="")
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey("content_type", "object_id")

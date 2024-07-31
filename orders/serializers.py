@@ -37,6 +37,7 @@ class OrderItemSerializer(serializers.ModelSerializer):
             "order__completed_by",
             "price",
             "order__location",
+            "note",
         ]
 
     def get_price(self, obj):
