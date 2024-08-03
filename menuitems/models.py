@@ -44,3 +44,11 @@ class MenuItemFlavor(models.Model):
 
     def __str__(self):
         return f"{self.menu_item.name} {self.flavor.name} {self.quantity}"
+
+    @property
+    def cup_quantities(self):
+        cup_quantities = dict()
+        for cup in Cup.objects.all():
+            quantity = self.quantity * cup.conversion_factor
+            cup_quantities[cup.id] = quantity
+        return cup_quantities

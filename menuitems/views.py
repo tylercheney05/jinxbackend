@@ -7,7 +7,10 @@ from menuitems.serializers import MenuItemSerializer
 
 
 class MenuItemViewSet(
-    viewsets.GenericViewSet, mixins.CreateModelMixin, mixins.ListModelMixin
+    viewsets.GenericViewSet,
+    mixins.CreateModelMixin,
+    mixins.ListModelMixin,
+    mixins.RetrieveModelMixin,
 ):
     http_method_names = ["post", "get"]
     queryset = MenuItem.objects.all()

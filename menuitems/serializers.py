@@ -8,10 +8,17 @@ class MenuItemFlavorSerializer(serializers.ModelSerializer):
     flavor__flavor_group__uom__display = serializers.SerializerMethodField(
         read_only=True
     )
+    cup_quantities = serializers.DictField(read_only=True)
 
     class Meta:
         model = MenuItemFlavor
-        fields = ["flavor__name", "quantity", "flavor__flavor_group__uom__display"]
+        fields = [
+            "flavor__name",
+            "quantity",
+            "flavor__flavor_group__uom__display",
+            "flavor",
+            "cup_quantities",
+        ]
 
     def get_flavor__flavor_group__uom__display(self, obj):
         return obj.flavor.flavor_group.get_uom_display()
