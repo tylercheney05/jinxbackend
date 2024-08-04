@@ -15,7 +15,7 @@ class OrderSerializer(serializers.ModelSerializer):
 
 
 class OrderItemSerializer(serializers.ModelSerializer):
-    menu_item = serializers.IntegerField(write_only=True)
+    menu_item = serializers.IntegerField(write_only=True, required=False)
     menu_item__name = serializers.CharField(
         source="content_object.name", read_only=True
     )
@@ -77,7 +77,7 @@ class OrderItemSerializer(serializers.ModelSerializer):
 
     @transaction.atomic
     def create(self, validated_data):
-        menu_item_id = validated_data.pop("menu_item")
+        menu_item_id = validated_data.pop("menu_item", None)
         order = validated_data.pop("order")
         location = order.get("location")
         custom_order__soda = validated_data.pop("custom_order__soda", None)
