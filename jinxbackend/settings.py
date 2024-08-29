@@ -32,12 +32,16 @@ SECRET_KEY = str(os.environ.get("SECRET_KEY"))
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True if os.environ["NODE_ENV"] == "development" else False
 
+HOST = str(os.environ.get("HOST"))
+REDIS_PORT = int(os.environ.get("REDIS_PORT"))
+
 ALLOWED_HOSTS = []
 
 
 # Application definition
 
 INSTALLED_APPS = [
+    "daphne",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -49,6 +53,7 @@ INSTALLED_APPS = [
     "django_extensions",
     "django_filters",
     "cuser",
+    "channels",
     "core",
     "users",
     "sodas",
@@ -161,3 +166,13 @@ SIMPLE_JWT = {
 }
 
 AUTH_USER_MODEL = "users.User"
+
+ASGI_APPLICATION = "jinxbackend.asgi.application"
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [(HOST, REDIS_PORT)],
+        },
+    },
+}

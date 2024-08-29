@@ -3,14 +3,16 @@ from rest_framework import serializers
 
 from locations.models import Location
 from menuitems.models import MenuItem
-from orders.models import CustomOrder, CustomOrderFlavor, Order, OrderItem
+from orders.models import CustomOrder, CustomOrderFlavor, Order, OrderItem, OrderName
 from sodas.models import Soda
 
 
 class OrderSerializer(serializers.ModelSerializer):
+    order_name__name = serializers.CharField(source="order_name.name", read_only=True)
+
     class Meta:
         model = Order
-        fields = ["id", "completed_by"]
+        fields = ["id", "collected_by", "location", "order_name__name"]
         read_only_fields = ["id"]
 
 
@@ -20,8 +22,8 @@ class OrderItemSerializer(serializers.ModelSerializer):
         source="content_object.name", read_only=True
     )
     cup__size__display = serializers.SerializerMethodField(read_only=True)
-    order__completed_by = serializers.PrimaryKeyRelatedField(
-        source="order.completed_by", read_only=True
+    order__collected_by = serializers.PrimaryKeyRelatedField(
+        source="order.collected_by", read_only=True
     )
     price = serializers.SerializerMethodField(read_only=True)
     order__location = serializers.PrimaryKeyRelatedField(
@@ -43,7 +45,7 @@ class OrderItemSerializer(serializers.ModelSerializer):
             "zero_sugar",
             "menu_item",
             "menu_item__name",
-            "order__completed_by",
+            "order__collected_by",
             "price",
             "order__location",
             "note",
@@ -84,7 +86,7 @@ class OrderItemSerializer(serializers.ModelSerializer):
         custom_order_flavors = validated_data.pop("custom_order_flavors", [])
 
         order, _ = Order.objects.get_or_create(
-            completed_by=self.context["request"].user,
+            collected_by=self.context["request"].user,
             is_paid=False,
             location=location,
         )
@@ -107,3 +109,9 @@ class OrderItemSerializer(serializers.ModelSerializer):
         )
         order_item.save()
         return order_item
+
+
+class OrderNameSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = OrderName
+        fields = ["name"]

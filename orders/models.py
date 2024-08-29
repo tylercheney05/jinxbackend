@@ -9,10 +9,11 @@ from cups.models import Cup
 
 class Order(models.Model):
     date = models.DateTimeField(auto_now_add=True)
-    discount = models.FloatField(default=0)
-    completed_by = models.ForeignKey(
+    collected_by = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.PROTECT,
+        help_text="The user who collected the order payment",
+        related_name="orders_collected",
     )
     is_paid = models.BooleanField(default=False)
     location = models.ForeignKey(
@@ -20,6 +21,15 @@ class Order(models.Model):
         on_delete=models.CASCADE,
         related_name="orders",
     )
+    prepared_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.PROTECT,
+        help_text="The user who prepared the items in the order",
+        related_name="orders_prepared",
+        null=True,
+    )
+    is_prepared = models.BooleanField(default=False)
+    order_name = models.ForeignKey("OrderName", on_delete=models.PROTECT, null=True)
 
     def __str__(self):
         return f"Order {self.id} - {self.date}"
@@ -76,3 +86,10 @@ class CustomOrderFlavor(models.Model):
 
     def __str__(self):
         return f"Custom Order {self.custom_order.id} {self.flavor.name} {self.quantity}"
+
+
+class OrderName(models.Model):
+    name = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.name

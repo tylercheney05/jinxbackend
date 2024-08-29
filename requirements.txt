@@ -1,0 +1,8 @@
+asgiref==3.8.1
+channels==4.1.0
+Django==4.2.11
+django_cuser==2017.3.16
+djangorestframework==3.15.1
+djangorestframework_simplejwt==5.3.1
+pandas==2.0.3
+python-dotenv==1.0.1
