@@ -3,6 +3,7 @@ from urllib.parse import parse_qs
 
 from channels.db import database_sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
+from django.db.models import BooleanField, Case, F, IntegerField, Value, When
 
 from orders.models import Order
 from orders.serializers import OrderSerializer
@@ -39,6 +40,14 @@ class OrderConsumer(AsyncWebsocketConsumer):
         await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
 
     async def receive(self, text_data):
+        text_data_json = json.loads(text_data)
+        order_in_progress_exists = "order_in_progress" in text_data_json
+        order_in_progress = text_data_json.get("order_in_progress", False)
+        order_id = text_data_json.get("order_id", False)
+
+        if order_in_progress_exists and order_id:
+            await self.mark_order_in_progress(order_id, order_in_progress)
+
         pending_orders = await self.get_pending_orders()
 
         # Send pending_orders to room group
@@ -49,13 +58,36 @@ class OrderConsumer(AsyncWebsocketConsumer):
 
     @database_sync_to_async
     def get_pending_orders(self):
-        pending_orders_queryset = Order.objects.filter(
-            location_id=self.location_id,
-            is_paid=True,
-            is_prepared=False,
+        pending_orders_queryset = (
+            Order.objects.filter(
+                location_id=self.location_id,
+                is_paid=True,
+            )
+            .annotate(
+                is_complete_order=Case(
+                    When(is_complete=True, then=Value(1)),
+                    When(is_complete=False, then=Value(0)),
+                    output_field=BooleanField(),
+                ),
+                order_id=Case(
+                    When(is_complete=True, then=-F("id")),
+                    When(is_complete=False, then=F("id")),
+                    output_field=IntegerField(),
+                ),
+            )
+            .order_by("is_complete_order", "order_id")[:10]
         )
+
         serializer = OrderSerializer(pending_orders_queryset, many=True)
         return serializer.data
+
+    @database_sync_to_async
+    def mark_order_in_progress(self, order_id, order_in_progress):
+        order = Order.objects.get(id=order_id)
+        order.is_in_progress = order_in_progress
+        order.save()
+        if not order_in_progress:
+            order.items.all().update(is_prepared=False)
 
     # Receive pending_orders from room group
     async def receive_orders(self, event):

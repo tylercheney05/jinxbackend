@@ -5,16 +5,28 @@ from rest_framework.response import Response
 
 from core.viewsets import AutocompleteViewSetMixin
 from orders.models import Order, OrderItem, OrderName
-from orders.serializers import OrderItemSerializer, OrderNameSerializer, OrderSerializer
+from orders.serializers import (
+    OrderDetailSerializer,
+    OrderItemSerializer,
+    OrderNameSerializer,
+    OrderSerializer,
+)
 
 
-class OrderViewSet(viewsets.GenericViewSet, mixins.ListModelMixin):
+class OrderViewSet(
+    viewsets.GenericViewSet, mixins.ListModelMixin, mixins.RetrieveModelMixin
+):
     http_method_names = ["get", "patch"]
     queryset = Order.objects.all()
     permission_classes = [permissions.IsAdminUser]
     serializer_class = OrderSerializer
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ["is_paid", "collected_by", "location", "is_prepared"]
+    filterset_fields = ["is_paid", "collected_by", "location", "is_complete"]
+
+    def get_serializer_class(self):
+        if self.action == "retrieve":
+            return OrderDetailSerializer
+        return self.serializer_class
 
     @action(detail=True, methods=["patch"], url_path="complete-order-payment")
     def complete_order_payment(self, request, *args, **kwargs):
@@ -26,16 +38,41 @@ class OrderViewSet(viewsets.GenericViewSet, mixins.ListModelMixin):
         obj.save()
         return Response(self.get_serializer(obj).data)
 
+    @action(detail=True, methods=["patch"], url_path="update-in-progress")
+    def update_in_progress(self, request, *args, **kwargs):
+        obj = self.get_object()
+        is_in_progress = request.data.get("is_in_progress", False)
+        obj.is_in_progress = is_in_progress
+
+        if not is_in_progress:
+            obj.items.all().update(is_prepared=False)
+        obj.save()
+        return Response(self.get_serializer(obj).data)
+
 
 class OrderItemViewSet(
     viewsets.GenericViewSet, mixins.CreateModelMixin, mixins.ListModelMixin
 ):
-    http_method_names = ["post", "get"]
+    http_method_names = ["post", "get", "patch"]
     queryset = OrderItem.objects.all()
     permission_classes = [permissions.IsAdminUser]
     serializer_class = OrderItemSerializer
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ["order__is_paid", "order__collected_by"]
+    filterset_fields = ["order__is_paid", "order__collected_by", "order"]
+
+    @action(detail=True, methods=["patch"], url_path="prepare-order-item")
+    def prepare_order_item(self, request, *args, **kwargs):
+        obj = self.get_object()
+        is_prepared = request.data.get("is_prepared", False)
+        obj.is_prepared = is_prepared
+        obj.save()
+
+        remaining_order_items = obj.order.items.filter(is_prepared=False)
+        if not remaining_order_items.exists():
+            obj.order.is_complete = True
+            obj.order.is_in_progress = False
+            obj.order.save()
+        return Response(self.get_serializer(obj).data)
 
 
 class OrderNameViewSet(

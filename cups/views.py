@@ -16,6 +16,7 @@ class CupViewSet(
     viewsets.GenericViewSet,
     mixins.CreateModelMixin,
     mixins.ListModelMixin,
+    mixins.RetrieveModelMixin,
 ):
     http_method_names = ["get", "post"]
     queryset = Cup.objects.all()

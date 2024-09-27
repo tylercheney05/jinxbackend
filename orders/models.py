@@ -1,6 +1,4 @@
 from django.conf import settings
-from django.contrib.contenttypes.fields import GenericForeignKey
-from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.db.models import F, Sum
 
@@ -21,15 +19,9 @@ class Order(models.Model):
         on_delete=models.CASCADE,
         related_name="orders",
     )
-    prepared_by = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.PROTECT,
-        help_text="The user who prepared the items in the order",
-        related_name="orders_prepared",
-        null=True,
-    )
-    is_prepared = models.BooleanField(default=False)
+    is_complete = models.BooleanField(default=False)
     order_name = models.ForeignKey("OrderName", on_delete=models.PROTECT, null=True)
+    is_in_progress = models.BooleanField(default=False)
 
     def __str__(self):
         return f"Order {self.id} - {self.date}"
@@ -38,14 +30,91 @@ class Order(models.Model):
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="items")
     cup = models.ForeignKey("cups.Cup", on_delete=models.CASCADE)
-    zero_sugar = models.BooleanField(default=False)
+    low_sugar = models.BooleanField(default=False)
     note = models.TextField(blank=True, default="")
-    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
-    object_id = models.PositiveIntegerField()
-    content_object = GenericForeignKey("content_type", "object_id")
+    is_prepared = models.BooleanField(default=False)
 
     def __str__(self):
         return f"OrderItem {self.id} - {self.order}"
+
+
+class OrderItemMenuItem(models.Model):
+    order_item = models.OneToOneField(
+        OrderItem, on_delete=models.CASCADE, related_name="menu_item"
+    )
+    menu_item = models.ForeignKey(
+        "menuitems.MenuItem",
+        on_delete=models.CASCADE,
+        related_name="menu_item_order_items",
+    )
+
+    def __str__(self):
+        return f"OrderItemMenuItem {self.id}"
+
+
+class MenuItemCustomOrder(models.Model):
+    """The same thing as CustomOrder except this associates it to a menu item"""
+
+    menu_item = models.ForeignKey(
+        "menuitems.MenuItem", on_delete=models.CASCADE, related_name="custom_orders"
+    )
+    soda = models.ForeignKey(
+        "sodas.Soda", on_delete=models.CASCADE, related_name="menu_item_custom_orders"
+    )
+
+    def __str__(self):
+        return f"MenuItemCustomOrder {self.id}"
+
+    @property
+    def cup_prices(self):
+        cup_prices = list()
+        for cup in Cup.objects.all():
+            cup_price = cup.price
+            price = self.menu_item_custom_order_custom_order_flavors.annotate(
+                quantity_price=(
+                    F("custom_order_flavor__quantity")
+                    * F("custom_order_flavor__flavor__flavor_group__price")
+                )
+            ).aggregate(total_sum_product=Sum("quantity_price"))
+            cup_prices.append(
+                {
+                    "id": cup.id,
+                    "size": cup.size,
+                    "size__display": cup.get_size_display(),
+                    "price": cup_price + price.get("total_sum_product", 0),
+                }
+            )
+        return cup_prices
+
+
+class OrderItemMenuItemCustomOrder(models.Model):
+    order_item = models.OneToOneField(
+        OrderItem,
+        on_delete=models.CASCADE,
+        related_name="menu_item_custom_order",
+    )
+    menu_item_custom_order = models.ForeignKey(
+        MenuItemCustomOrder,
+        on_delete=models.CASCADE,
+        related_name="menu_item_custom_order_order_items",
+    )
+
+    def __str__(self):
+        return f"OrderItemMenuItemCustomOrder {self.id}"
+
+
+class OrderItemCustomOrder(models.Model):
+    order_item = models.OneToOneField(
+        OrderItem, on_delete=models.CASCADE, related_name="custom_order"
+    )
+    custom_order = models.ForeignKey(
+        "orders.CustomOrder",
+        on_delete=models.CASCADE,
+        related_name="custom_order_order_items",
+    )
+
+    def __str__(self):
+        return f"OrderItemCustomOrder {self.id}"
 
 
 class CustomOrder(models.Model):
@@ -61,8 +130,11 @@ class CustomOrder(models.Model):
         cup_prices = list()
         for cup in Cup.objects.all():
             cup_price = cup.price
-            price = self.custom_flavors.annotate(
-                quantity_price=(F("quantity")) * F("flavor__flavor_group__price")
+            price = self.custom_order_custom_order_flavors.annotate(
+                quantity_price=(
+                    F("custom_order_flavor__quantity")
+                    * F("custom_order_flavor__flavor__flavor_group__price")
+                )
             ).aggregate(total_sum_product=Sum("quantity_price"))
             cup_prices.append(
                 {
@@ -76,16 +148,45 @@ class CustomOrder(models.Model):
 
 
 class CustomOrderFlavor(models.Model):
-    custom_order = models.ForeignKey(
-        "CustomOrder", on_delete=models.CASCADE, related_name="custom_flavors"
-    )
     flavor = models.ForeignKey(
         "flavors.Flavor", on_delete=models.CASCADE, related_name="custom_order_flavors"
     )
     quantity = models.PositiveIntegerField()
 
     def __str__(self):
-        return f"Custom Order {self.custom_order.id} {self.flavor.name} {self.quantity}"
+        return f"Custom Order {self.object_id} {self.flavor.name} {self.quantity}"
+
+
+class CustomOrderFlavorCustomOrder(models.Model):
+    custom_order_flavor = models.OneToOneField(
+        CustomOrderFlavor,
+        on_delete=models.CASCADE,
+        related_name="custom_order_flavor_custom_order",
+    )
+    custom_order = models.ForeignKey(
+        CustomOrder,
+        on_delete=models.CASCADE,
+        related_name="custom_order_custom_order_flavors",
+    )
+
+    def __str__(self):
+        return f"CustomOrderFlavorCustomOrder {self.id}"
+
+
+class CustomOrderFlavorMenuItemCustomOrder(models.Model):
+    custom_order_flavor = models.OneToOneField(
+        CustomOrderFlavor,
+        on_delete=models.CASCADE,
+        related_name="custom_order_flavor_menu_item_custom_order",
+    )
+    menu_item_custom_order = models.ForeignKey(
+        MenuItemCustomOrder,
+        on_delete=models.CASCADE,
+        related_name="menu_item_custom_order_custom_order_flavors",
+    )
+
+    def __str__(self):
+        return f"CustomOrderFlavorMenuItemCustomOrder {self.id}"
 
 
 class OrderName(models.Model):
