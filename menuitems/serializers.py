@@ -1,6 +1,11 @@
 from rest_framework import serializers
 
-from menuitems.models import LimitedTimePromotion, MenuItem, MenuItemFlavor
+from menuitems.models import (
+    LimitedTimeMenuItem,
+    LimitedTimePromotion,
+    MenuItem,
+    MenuItemFlavor,
+)
 
 
 class MenuItemFlavorSerializer(serializers.ModelSerializer):
@@ -31,6 +36,9 @@ class MenuItemSerializer(serializers.ModelSerializer):
     flavors = MenuItemFlavorSerializer(many=True, read_only=True)
     soda__name = serializers.CharField(source="soda.name", read_only=True)
     cup_prices = serializers.ListField(read_only=True)
+    limited_time_promo = serializers.IntegerField(
+        write_only=True, required=False, allow_null=True
+    )
 
     class Meta:
         model = MenuItem
@@ -42,17 +50,23 @@ class MenuItemSerializer(serializers.ModelSerializer):
             "flavors",
             "menu_item_flavors",
             "cup_prices",
+            "limited_time_promo",
         ]
         read_only_fields = ["id"]
 
     def create(self, validated_data):
         flavors = validated_data.pop("menu_item_flavors")
+        limited_time_promo = validated_data.pop("limited_time_promo", None)
         menu_item = MenuItem.objects.create(**validated_data)
         for flavor in flavors:
             MenuItemFlavor.objects.create(
                 menu_item=menu_item,
                 flavor_id=flavor["flavor"],
                 quantity=flavor["quantity"],
+            )
+        if limited_time_promo:
+            LimitedTimeMenuItem.objects.create(
+                menu_item=menu_item, limited_time_promo_id=limited_time_promo
             )
         return menu_item
 

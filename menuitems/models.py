@@ -59,3 +59,15 @@ class LimitedTimePromotion(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class LimitedTimeMenuItem(models.Model):
+    menu_item = models.ForeignKey(
+        MenuItem, on_delete=models.CASCADE, related_name="limited_time_promotions"
+    )
+    limited_time_promo = models.ForeignKey(
+        LimitedTimePromotion, on_delete=models.CASCADE, related_name="menu_items"
+    )
+
+    def __str__(self):
+        return f"{self.menu_item.name} {self.limited_time_promo.name}"
