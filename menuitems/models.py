@@ -52,3 +52,10 @@ class MenuItemFlavor(models.Model):
             quantity = self.quantity * cup.conversion_factor
             cup_quantities[cup.id] = quantity
         return cup_quantities
+
+
+class LimitedTimePromotion(models.Model):
+    name = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.name

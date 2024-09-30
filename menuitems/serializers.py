@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from menuitems.models import MenuItem, MenuItemFlavor
+from menuitems.models import LimitedTimePromotion, MenuItem, MenuItemFlavor
 
 
 class MenuItemFlavorSerializer(serializers.ModelSerializer):
@@ -55,3 +55,9 @@ class MenuItemSerializer(serializers.ModelSerializer):
                 quantity=flavor["quantity"],
             )
         return menu_item
+
+
+class LimitedTimePromotionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = LimitedTimePromotion
+        fields = ["name"]
