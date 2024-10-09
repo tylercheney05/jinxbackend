@@ -4,8 +4,9 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from core.viewsets import AutocompleteViewSetMixin
-from orders.models import Order, OrderItem, OrderName
+from orders.models import Discount, Order, OrderItem, OrderName
 from orders.serializers import (
+    DiscountSerializer,
     OrderDetailSerializer,
     OrderItemSerializer,
     OrderNameSerializer,
@@ -85,4 +86,17 @@ class OrderNameViewSet(
     queryset = OrderName.objects.all()
     permission_classes = [permissions.IsAdminUser]
     serializer_class = OrderNameSerializer
+    autocomplete_fields = ["id", "name"]
+
+
+class DiscountViewSet(
+    AutocompleteViewSetMixin,
+    viewsets.GenericViewSet,
+    mixins.CreateModelMixin,
+    mixins.ListModelMixin,
+):
+    http_method_names = ["post", "get"]
+    queryset = Discount.objects.all()
+    permission_classes = [permissions.IsAdminUser]
+    serializer_class = DiscountSerializer
     autocomplete_fields = ["id", "name"]
