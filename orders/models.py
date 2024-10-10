@@ -28,6 +28,16 @@ class Order(models.Model):
         return f"Order {self.id} - {self.date}"
 
 
+class OrderPaidAmount(models.Model):
+    order = models.OneToOneField(
+        Order, on_delete=models.CASCADE, related_name="paid_amount"
+    )
+    paid_amount = models.DecimalField(decimal_places=2, max_digits=5)
+
+    def __str__(self):
+        return f"OrderPaidAmount {self.id}"
+
+
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="items")
     cup = models.ForeignKey("cups.Cup", on_delete=models.CASCADE)
@@ -231,3 +241,11 @@ class DiscountCupSize(models.Model):
 
     def __str__(self):
         return f"{self.discount.name} - {self.cup.size}"
+
+
+class OrderDiscount(models.Model):
+    order = models.OneToOneField(Order, on_delete=models.CASCADE)
+    discount = models.ForeignKey(Discount, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.order} - {self.discount.name}"

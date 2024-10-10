@@ -4,7 +4,14 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from core.viewsets import AutocompleteViewSetMixin
-from orders.models import Discount, Order, OrderItem, OrderName
+from orders.models import (
+    Discount,
+    Order,
+    OrderDiscount,
+    OrderItem,
+    OrderName,
+    OrderPaidAmount,
+)
 from orders.serializers import (
     DiscountSerializer,
     OrderDetailSerializer,
@@ -32,11 +39,18 @@ class OrderViewSet(
     @action(detail=True, methods=["patch"], url_path="complete-order-payment")
     def complete_order_payment(self, request, *args, **kwargs):
         order_name_id = request.data.get("order_name")
+        paid_amount = request.data.get("paid_amount")
+        discount_id = request.data.get("discount", 0)
 
         obj = self.get_object()
         obj.is_paid = True
         obj.order_name_id = order_name_id
         obj.save()
+
+        OrderPaidAmount.objects.create(order=obj, paid_amount=paid_amount)
+
+        if discount_id:
+            OrderDiscount.objects.create(order=obj, discount_id=discount_id)
         return Response(self.get_serializer(obj).data)
 
     @action(detail=True, methods=["patch"], url_path="update-in-progress")
