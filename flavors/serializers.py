@@ -32,6 +32,7 @@ class FlavorSerializer(serializers.ModelSerializer):
             "flavor_group__uom__display",
             "flavor_group__name",
             "flavor_group__price",
+            "sugar_free_available",
         ]
         read_only_fields = ["id"]
 

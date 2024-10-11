@@ -21,9 +21,6 @@ class MenuItemViewSet(
     filter_backends = [DjangoFilterBackend]
     filterset_class = MenuItemFilter
 
-    def list(self, request, *args, **kwargs):
-        return super().list(request, *args, **kwargs)
-
 
 class LimitedTimePromotionViewSet(
     AutocompleteViewSetMixin,
