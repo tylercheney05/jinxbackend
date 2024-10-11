@@ -15,6 +15,7 @@ class FlavorGroup(models.Model):
         ("tbs", "Tablespoon"),
         ("wedge", "Wedge"),
         ("single", "Single"),
+        ("pinch", "Pinch"),
     ]
 
     name = models.CharField(max_length=200)
