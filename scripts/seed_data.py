@@ -7,15 +7,21 @@ from menuitems.models import (
     MenuItem,
     MenuItemFlavor,
 )
-from orders.models import OrderName
+from orders.models import (
+    Discount,
+    DiscountCupSize,
+    DiscountPercentOff,
+    DiscountPrice,
+    OrderName,
+)
 from sodas.models import Soda
 
 
 def run():
     # Add cups
-    Cup.objects.get_or_create(size="16", price=3, conversion_factor=1)
+    _16_oz, _ = Cup.objects.get_or_create(size="16", price=3, conversion_factor=1)
     print("16 oz cup created")
-    Cup.objects.get_or_create(size="32", price=3.5, conversion_factor=2)
+    _32_oz, _ = Cup.objects.get_or_create(size="32", price=3.5, conversion_factor=2)
     print("32 oz cup created")
 
     print("\n")
@@ -501,3 +507,19 @@ def run():
     print("Bow Wow created")
     OrderName.objects.get_or_create(name="Ciara")
     print("Ciara created")
+
+    print("\n")
+    print("--------------------")
+    print("\n")
+
+    ## Add Discounts
+    free_discount, _ = Discount.objects.get_or_create(name="Free", code="FREE")
+    DiscountPercentOff(discount=free_discount, percent_off=1)
+    print("Free discount created")
+
+    lime_bois_am_perk, _ = Discount.objects.get_or_create(
+        name="Lime Boi's AM Perk", code="AMPERK202409"
+    )
+    DiscountPrice.objects.get_or_create(discount=lime_bois_am_perk, price=4)
+    DiscountCupSize.objects.get_or_create(discount=lime_bois_am_perk, cup=_16_oz)
+    print("Lime Boi's AM Perk discount created")
