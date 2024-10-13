@@ -1,5 +1,6 @@
 from cups.models import Cup
 from flavors.models import Flavor, FlavorGroup
+from locations.models import Location
 from menuitems.models import (
     LimitedTimeMenuItem,
     LimitedTimePromotion,
@@ -382,3 +383,48 @@ def run():
         menu_item=lovers_and_friends, limited_time_promo=lovers_and_friends_fall_2024
     )
     print("Lovers & Friends created")
+
+    print("\n")
+    print("--------------------")
+    print("\n")
+
+    ## Add Locations
+    Location.objects.get_or_create(
+        name="Midtown Farmer's Market",
+        address="1050 20th St",
+        city="Sacramento",
+        state="CA",
+        zip_code="95811",
+        is_event=True,
+    )
+    print("Midtown Farmers Market created")
+
+    Location.objects.get_or_create(
+        name="Sactowns Finest Market",
+        address="1715 R St",
+        city="Sacramento",
+        state="CA",
+        zip_code="95811",
+        is_event=True,
+    )
+    print("Sactowns Finest Market created")
+
+    Location.objects.get_or_create(
+        name="Soda Way",
+        address="3341 Soda Way",
+        city="Sacramento",
+        state="CA",
+        zip_code="95834",
+        is_event=False,
+    )
+    print("Soda Way created")
+
+    Location.objects.get_or_create(
+        name="World's Worst Second Saturday",
+        address="2000 K St",
+        city="Sacramento",
+        state="CA",
+        zip_code="95811",
+        is_event=True,
+    )
+    print("World's Worst Second Saturday created")
