@@ -10,4 +10,8 @@ class MenuItemFilter(django_filters.FilterSet):
 
     class Meta:
         model = MenuItem
-        fields = ["soda", "limited_time_promotions"]
+        fields = [
+            "soda",
+            "limited_time_promotions__limited_time_promo",
+            "limited_time_promotions__isnull",
+        ]
