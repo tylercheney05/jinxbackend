@@ -1,5 +1,11 @@
+import os
+
+import pandas as pd
+import pytz
+
 from cups.models import Cup
 from flavors.models import Flavor, FlavorGroup
+from jinxbackend.settings import BASE_DIR
 from locations.models import Location
 from menuitems.models import (
     LimitedTimeMenuItem,
@@ -12,9 +18,15 @@ from orders.models import (
     DiscountCupSize,
     DiscountPercentOff,
     DiscountPrice,
+    Order,
+    OrderDiscount,
+    OrderItem,
+    OrderItemMenuItem,
     OrderName,
+    OrderPaidAmount,
 )
 from sodas.models import Soda
+from users.models import User
 
 
 def run():
@@ -255,11 +267,11 @@ def run():
     )
     print("My Favorite Part created")
 
-    dang, _ = MenuItem.objects.get_or_create(name="Dang", soda=mtn_dew)
+    dang, _ = MenuItem.objects.get_or_create(name="Dang!", soda=mtn_dew)
     MenuItemFlavor.objects.get_or_create(menu_item=dang, flavor=hibiscus, quantity=2)
     MenuItemFlavor.objects.get_or_create(menu_item=dang, flavor=coconut, quantity=1)
     MenuItemFlavor.objects.get_or_create(menu_item=dang, flavor=peach, quantity=1)
-    print("Dang created")
+    print("Dang! created")
 
     could_you_be_loved, _ = MenuItem.objects.get_or_create(
         name="Could You Be Loved", soda=mtn_dew
@@ -523,3 +535,72 @@ def run():
     DiscountPrice.objects.get_or_create(discount=lime_bois_am_perk, price=4)
     DiscountCupSize.objects.get_or_create(discount=lime_bois_am_perk, cup=_16_oz)
     print("Lime Boi's AM Perk discount created")
+
+    file_location = os.path.join(BASE_DIR, "files", "Order Tracking.xlsx")
+    menu_item_orders = pd.read_excel(file_location, sheet_name="Menu Item Orders")
+
+    prev_order_num = 0
+    for label, row in menu_item_orders.iterrows():
+        order_num = row["Order #"]
+        date = row["Date"]
+        location = row["Location"]
+        cup = row["Cup"]
+        zero_sugar = row["Zero Sugar"]
+        menu_item = row["Menu Item"]
+        charged = row["Charged"]
+        discount_code = row["Discount Code"]
+
+        cup_mapping = {
+            "16 oz": "16",
+            "32 oz": "32",
+        }
+
+        location_obj = Location.objects.get(name=location)
+        cup_obj = Cup.objects.get(size=cup_mapping[cup])
+        menu_item_obj = MenuItem.objects.get(name__iexact=menu_item)
+
+        if order_num != prev_order_num:
+            total_charged = charged
+            date = date.to_pydatetime()
+            pacific = pytz.timezone("US/Pacific")
+            utc = pytz.utc
+            date = pacific.localize(date).astimezone(utc)
+
+            print("date", date)
+
+            order = Order.objects.create(
+                date=date,
+                collected_by=User.objects.first(),
+                is_paid=True,
+                location=location_obj,
+                is_complete=True,
+                is_in_progress=False,
+            )
+            print(f"Order {order_num} created")
+
+            OrderPaidAmount.objects.create(order=order, paid_amount=total_charged)
+            print(f"OrderPaidAmount {order_num} ${total_charged} created")
+        else:
+            total_charged += charged
+            OrderPaidAmount.objects.filter(order=order).update(
+                paid_amount=total_charged
+            )
+            print(f"OrderPaidAmount {order_num} ${total_charged} updated")
+
+        order_item = OrderItem.objects.create(
+            order=order, cup=cup_obj, low_sugar=zero_sugar, is_prepared=True
+        )
+        print(f"OrderItem {order_num} {menu_item} created")
+
+        OrderItemMenuItem.objects.create(order_item=order_item, menu_item=menu_item_obj)
+        print(f"OrderItemMenuItem {order_num} {menu_item} created")
+
+        if pd.notna(discount_code):
+            discount = Discount.objects.get(code=discount_code)
+            OrderDiscount.objects.create(order=order, discount=discount)
+            print(f"OrderDiscount {order_num} {discount_code} created")
+        elif charged == 0:
+            OrderDiscount.objects.create(order=order, discount=free_discount)
+            print(f"OrderDiscount {order_num} FREE created")
+
+        prev_order_num = order_num

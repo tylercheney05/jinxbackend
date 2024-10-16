@@ -7,7 +7,8 @@ from cups.models import Cup
 
 
 class Order(models.Model):
-    date = models.DateTimeField(auto_now_add=True)
+    # TODO: update back to auto_now_add=True
+    date = models.DateTimeField()
     collected_by = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.PROTECT,
