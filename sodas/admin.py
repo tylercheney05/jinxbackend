@@ -1,3 +1,5 @@
 from django.contrib import admin
 
-# Register your models here.
+from sodas.models import Soda
+
+admin.site.register(Soda)
