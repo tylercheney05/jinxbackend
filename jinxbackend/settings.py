@@ -35,7 +35,7 @@ DEBUG = True if os.environ["NODE_ENV"] == "development" else False
 HOST = str(os.environ.get("HOST"))
 REDIS_PORT = int(os.environ.get("REDIS_PORT"))
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
