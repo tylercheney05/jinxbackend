@@ -20,7 +20,6 @@ class CupViewSet(
 ):
     http_method_names = ["get", "post"]
     queryset = Cup.objects.all()
-    permission_classes = [IsSystemAdminUserOrIsStaffUserReadOnly]
     serializer_class = CupSerializer
 
     @action(detail=False, methods=["get"], url_path="autocomplete")
