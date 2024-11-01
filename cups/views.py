@@ -21,6 +21,7 @@ class CupViewSet(
     http_method_names = ["get", "post"]
     queryset = Cup.objects.all()
     serializer_class = CupSerializer
+    permission_classes = [IsSystemAdminUserOrIsStaffUserReadOnly]
 
     @action(detail=False, methods=["get"], url_path="autocomplete")
     def autocomplete(self, request, *args, **kwargs):
