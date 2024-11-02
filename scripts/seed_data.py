@@ -436,6 +436,15 @@ def run():
     )
     print("World's Worst Second Saturday created")
 
+    Location.objects.get_or_create(
+        name="Hella Good Market",
+        address="985 Riverfront St",
+        city="West Sacramento",
+        state="CA",
+        zip_code="95691",
+        is_event=True,
+    )
+
     print("\n")
     print("--------------------")
     print("\n")
