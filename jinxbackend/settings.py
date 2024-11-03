@@ -173,11 +173,13 @@ SIMPLE_JWT = {
 AUTH_USER_MODEL = "users.User"
 
 ASGI_APPLICATION = "jinxbackend.asgi.application"
+
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
             "hosts": [os.environ.get("REDIS_URL", "redis://localhost:6379")],
+            "ssl_cert_reqs": None,  # Disable SSL certificate verification
         },
     },
 }
