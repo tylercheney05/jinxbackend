@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from datetime import timedelta
 from pathlib import Path
-
+import ssl
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -174,13 +174,16 @@ AUTH_USER_MODEL = "users.User"
 
 ASGI_APPLICATION = "jinxbackend.asgi.application"
 
+ssl_context = ssl.SSLContext()
+ssl_context.check_hostname = False
+
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
             "hosts": [{
                 "address": os.environ.get("REDIS_URL", "redis://localhost:6379"),
-                "ssl": False,
+                "ssl": ssl_context,
             }],
         },
     },
