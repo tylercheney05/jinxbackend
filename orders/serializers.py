@@ -1,4 +1,4 @@
-from django.contrib.contenttypes.models import ContentType
+from django.utils import timezone
 from django.db import transaction
 from rest_framework import serializers
 
@@ -198,6 +198,7 @@ class OrderItemSerializer(serializers.ModelSerializer):
             collected_by=self.context["request"].user,
             is_paid=False,
             location=location,
+            date=timezone.now(),
         )
         order_item = OrderItem(
             order=order,
