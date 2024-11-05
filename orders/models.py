@@ -4,6 +4,7 @@ from django.db import models
 from django.db.models import F, Sum
 
 from cups.models import Cup
+from django.utils import timezone
 
 
 class Order(models.Model):
@@ -27,6 +28,11 @@ class Order(models.Model):
 
     def __str__(self):
         return f"Order {self.id} - {self.date}"
+    
+    def save(self, *args, **kwargs):
+        if not self.date:
+            self.date = timezone.now()
+        super().save(*args, **kwargs)
 
 
 class OrderPaidAmount(models.Model):

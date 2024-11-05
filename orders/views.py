@@ -87,7 +87,7 @@ class OrderItemViewSet(
             obj.order.is_complete = True
             obj.order.is_in_progress = False
             obj.order.save()
-        return Response(self.get_serializer(obj).data)
+        return Response(OrderDetailSerializer(obj.order).data)
 
 
 class OrderNameViewSet(

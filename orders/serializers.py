@@ -59,6 +59,7 @@ class OrderItemSerializer(serializers.ModelSerializer):
     order_item_name = serializers.SerializerMethodField(read_only=True)
     soda_name = serializers.SerializerMethodField(read_only=True)
     order_item_flavors = serializers.SerializerMethodField(read_only=True)
+    order__id = serializers.PrimaryKeyRelatedField(source="order", read_only=True)
 
     class Meta:
         model = OrderItem
@@ -68,55 +69,58 @@ class OrderItemSerializer(serializers.ModelSerializer):
             "cup__size__display",
             "low_sugar",
             "menu_item",
-            "order__collected_by",
             "price",
-            "order__location",
             "note",
             "custom_order__soda",
             "custom_order_flavors",
             "is_prepared",
             "order_item_name",
             "soda_name",
+            "order__id",
+            "order__collected_by",
+            "order__location",
             "order_item_flavors",
         ]
         read_only_fields = ["id", "is_prepared"]
 
     def get_price(self, obj):
-        discount_id = int(self.context["request"].query_params.get("discount", "0"))
-        discount = Discount.objects.get(id=discount_id) if discount_id else None
-        if hasattr(obj, "menu_item"):
-            cup_prices = obj.menu_item.menu_item.cup_prices
-        elif hasattr(obj, "menu_item_custom_order"):
-            cup_prices = obj.menu_item_custom_order.menu_item_custom_order.cup_prices
-        elif hasattr(obj, "custom_order"):
-            cup_prices = obj.custom_order.custom_order.cup_prices
+        if self.context:
+            discount_id = int(self.context["request"].query_params.get("discount", "0"))
+            discount = Discount.objects.get(id=discount_id) if discount_id else None
+            if hasattr(obj, "menu_item"):
+                cup_prices = obj.menu_item.menu_item.cup_prices
+            elif hasattr(obj, "menu_item_custom_order"):
+                cup_prices = obj.menu_item_custom_order.menu_item_custom_order.cup_prices
+            elif hasattr(obj, "custom_order"):
+                cup_prices = obj.custom_order.custom_order.cup_prices
 
-        discount_percent_off = 0
-        discount_price = 0
-        discount_cup_size = None
-        if discount:
-            if hasattr(discount, "discountcupsize"):
-                discount_cup_size = discount.discountcupsize.cup
-            if hasattr(discount, "discountpercentoff"):
-                discount_percent_off = discount.discountpercentoff.percent_off
-            elif hasattr(discount, "discountprice"):
-                discount_price = discount.discountprice.price
+            discount_percent_off = 0
+            discount_price = 0
+            discount_cup_size = None
+            if discount:
+                if hasattr(discount, "discountcupsize"):
+                    discount_cup_size = discount.discountcupsize.cup
+                if hasattr(discount, "discountpercentoff"):
+                    discount_percent_off = discount.discountpercentoff.percent_off
+                elif hasattr(discount, "discountprice"):
+                    discount_price = discount.discountprice.price
 
-        found_object = None
-        for item in cup_prices:
-            if item["size"] == obj.cup.size:
-                found_object = item
-                break
+            found_object = None
+            for item in cup_prices:
+                if item["size"] == obj.cup.size:
+                    found_object = item
+                    break
 
-        if discount_percent_off:
-            if discount_cup_size and discount_cup_size != obj.cup:
-                return found_object["price"]
-            return found_object["price"] * (1 - discount_percent_off)
-        elif discount_price:
-            if discount_cup_size and discount_cup_size != obj.cup:
-                return found_object["price"]
-            return discount_price
-        return found_object["price"]
+            if discount_percent_off:
+                if discount_cup_size and discount_cup_size != obj.cup:
+                    return found_object["price"]
+                return found_object["price"] * (1 - discount_percent_off)
+            elif discount_price:
+                if discount_cup_size and discount_cup_size != obj.cup:
+                    return found_object["price"]
+                return discount_price
+            return found_object["price"]
+        return None
 
     def get_cup__size__display(self, obj):
         return obj.cup.get_size_display()
@@ -198,7 +202,6 @@ class OrderItemSerializer(serializers.ModelSerializer):
             collected_by=self.context["request"].user,
             is_paid=False,
             location=location,
-            date=timezone.now(),
         )
         order_item = OrderItem(
             order=order,

@@ -197,7 +197,7 @@ def run():
         menu_item=pineapple_skies, flavor=pineapple, quantity=1
     )
     MenuItemFlavor.objects.get_or_create(
-        menu_item=pineapple_skies, flavor=coconut_cream, quantity=2
+        menu_item=pineapple_skies, flavor=coconut_cream, quantity=1
     )
     print("Pineapple Skies created")
 
@@ -206,7 +206,7 @@ def run():
         menu_item=thats_frio, flavor=cranberry, quantity=1
     )
     MenuItemFlavor.objects.get_or_create(
-        menu_item=thats_frio, flavor=elderflower, quantity=1
+        menu_item=thats_frio, flavor=fresh_lime, quantity=1
     )
     print("That's Frio created")
 
