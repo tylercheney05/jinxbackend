@@ -263,7 +263,8 @@ class OrderItemSerializer(serializers.ModelSerializer):
 class OrderNameSerializer(serializers.ModelSerializer):
     class Meta:
         model = OrderName
-        fields = ["name"]
+        fields = ["id", "name"]
+        read_only_fields = ["id"]
 
 
 class OrderDetailSerializer(serializers.ModelSerializer):
