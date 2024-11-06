@@ -1,9 +1,8 @@
-from django.utils import timezone
 from django.db import transaction
 from rest_framework import serializers
 
 from locations.models import Location
-from menuitems.models import MenuItem
+from menuitems.models import MenuItem, MenuItemFlavor
 from orders.models import (
     CustomOrder,
     CustomOrderFlavor,
@@ -54,7 +53,7 @@ class OrderItemSerializer(serializers.ModelSerializer):
         write_only=True, required=False, queryset=Soda.objects.all(), allow_null=True
     )
     custom_order_flavors = serializers.ListField(
-        child=serializers.DictField(), write_only=True
+        child=serializers.IntegerField(), write_only=True
     )
     order_item_name = serializers.SerializerMethodField(read_only=True)
     soda_name = serializers.SerializerMethodField(read_only=True)
@@ -90,7 +89,9 @@ class OrderItemSerializer(serializers.ModelSerializer):
             if hasattr(obj, "menu_item"):
                 cup_prices = obj.menu_item.menu_item.cup_prices
             elif hasattr(obj, "menu_item_custom_order"):
-                cup_prices = obj.menu_item_custom_order.menu_item_custom_order.cup_prices
+                cup_prices = (
+                    obj.menu_item_custom_order.menu_item_custom_order.cup_prices
+                )
             elif hasattr(obj, "custom_order"):
                 cup_prices = obj.custom_order.custom_order.cup_prices
 
@@ -197,6 +198,7 @@ class OrderItemSerializer(serializers.ModelSerializer):
         location = order.get("location")
         custom_order__soda = validated_data.pop("custom_order__soda", None)
         custom_order_flavors = validated_data.pop("custom_order_flavors", [])
+        cup = validated_data.get("cup", None)
 
         order, _ = Order.objects.get_or_create(
             collected_by=self.context["request"].user,
@@ -218,26 +220,37 @@ class OrderItemSerializer(serializers.ModelSerializer):
                 OrderItemMenuItemCustomOrder.objects.create(
                     order_item=order_item, menu_item_custom_order=menu_item_custom_order
                 )
+                for flavor in custom_order_flavors:
+                    try:
+                        # If the flavor is already in the menu item, use that quantity
+                        quantity = menu_item_custom_order.menu_item.flavors.get(
+                            flavor=flavor
+                        ).quantity * int(cup.conversion_factor)
+                    except MenuItemFlavor.DoesNotExist:
+                        quantity = int(cup.conversion_factor)
+                    custom_order_flavor = CustomOrderFlavor.objects.create(
+                        flavor_id=flavor,
+                        quantity=quantity,
+                    )
+                    CustomOrderFlavorMenuItemCustomOrder.objects.create(
+                        custom_order_flavor=custom_order_flavor,
+                        menu_item_custom_order=menu_item_custom_order,
+                    )
             else:
                 custom_order = CustomOrder.objects.create(soda=custom_order__soda)
                 OrderItemCustomOrder.objects.create(
                     order_item=order_item, custom_order=custom_order
                 )
-            for flavor in custom_order_flavors:
-                custom_order_flavor = CustomOrderFlavor.objects.create(
-                    flavor_id=flavor["flavor"],
-                    quantity=flavor["quantity"],
-                )
-                if menu_item_custom_order:
-                    CustomOrderFlavorMenuItemCustomOrder.objects.create(
-                        custom_order_flavor=custom_order_flavor,
-                        menu_item_custom_order=menu_item_custom_order,
+                for flavor in custom_order_flavors:
+                    custom_order_flavor = CustomOrderFlavor.objects.create(
+                        flavor_id=flavor["flavor"],
+                        quantity=flavor["quantity"],
                     )
-                elif custom_order:
-                    CustomOrderFlavorCustomOrder.objects.create(
-                        custom_order_flavor=custom_order_flavor,
-                        custom_order=custom_order,
-                    )
+                    if custom_order:
+                        CustomOrderFlavorCustomOrder.objects.create(
+                            custom_order_flavor=custom_order_flavor,
+                            custom_order=custom_order,
+                        )
         else:
             menu_item = MenuItem.objects.get(id=menu_item_id)
             OrderItemMenuItem.objects.create(
