@@ -176,7 +176,7 @@ class OrderItemSerializer(serializers.ModelSerializer):
                 custom_order_flavor_menu_item_custom_order
             ) in menu_item_custom_order_custom_order_flavors:
                 flavors[
-                    f"{'SUGAR-FREE ' if obj.low_sugar and flavor.flavor.sugar_free_available else ''}{custom_order_flavor_menu_item_custom_order.custom_order_flavor.flavor.name}"
+                    f"{'SUGAR-FREE ' if obj.low_sugar and custom_order_flavor_menu_item_custom_order.custom_order_flavor.flavor.sugar_free_available else ''}{custom_order_flavor_menu_item_custom_order.custom_order_flavor.flavor.name}"
                 ] = f"{custom_order_flavor_menu_item_custom_order.custom_order_flavor.quantity} {custom_order_flavor_menu_item_custom_order.custom_order_flavor.flavor.flavor_group.get_uom_display()}{'' if custom_order_flavor_menu_item_custom_order.custom_order_flavor.quantity == 1 else 's'}"
         elif hasattr(obj, "custom_order"):
             custom_order_custom_order_flavors = (
@@ -184,7 +184,7 @@ class OrderItemSerializer(serializers.ModelSerializer):
             )
             for custom_order_custom_order_flavor in custom_order_custom_order_flavors:
                 flavors[
-                    f"{'SUGAR-FREE ' if obj.low_sugar and flavor.flavor.sugar_free_available else ''}{custom_order_custom_order_flavor.custom_order_flavor.flavor.name}"
+                    f"{'SUGAR-FREE ' if obj.low_sugar and custom_order_custom_order_flavor.custom_order_flavor.flavor else ''}{custom_order_custom_order_flavor.custom_order_flavor.flavor.name}"
                 ] = f"{custom_order_custom_order_flavor.custom_order_flavor.quantity} {custom_order_custom_order_flavor.custom_order_flavor.flavor.flavor_group.get_uom_display()}{'' if custom_order_custom_order_flavor.custom_order_flavor.quantity == 1 else 's'}"
         else:
             flavors = {}
@@ -242,14 +242,13 @@ class OrderItemSerializer(serializers.ModelSerializer):
                 )
                 for flavor in custom_order_flavors:
                     custom_order_flavor = CustomOrderFlavor.objects.create(
-                        flavor_id=flavor["flavor"],
-                        quantity=flavor["quantity"],
+                        flavor_id=flavor,
+                        quantity=int(cup.conversion_factor),
                     )
-                    if custom_order:
-                        CustomOrderFlavorCustomOrder.objects.create(
-                            custom_order_flavor=custom_order_flavor,
-                            custom_order=custom_order,
-                        )
+                    CustomOrderFlavorCustomOrder.objects.create(
+                        custom_order_flavor=custom_order_flavor,
+                        custom_order=custom_order,
+                    )
         else:
             menu_item = MenuItem.objects.get(id=menu_item_id)
             OrderItemMenuItem.objects.create(
