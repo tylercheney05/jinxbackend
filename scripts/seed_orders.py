@@ -7,9 +7,7 @@ from cups.models import Cup
 from flavors.models import Flavor
 from jinxbackend.settings import BASE_DIR
 from locations.models import Location
-from menuitems.models import (
-    MenuItem,
-)
+from menuitems.models import MenuItem
 from orders.models import (
     CustomOrder,
     CustomOrderFlavor,
@@ -81,7 +79,7 @@ def run():
             print(f"OrderPaidAmount {order_num} ${total_charged} updated")
 
         order_item = OrderItem.objects.create(
-            order=order, cup=cup_obj, low_sugar=zero_sugar, is_prepared=True
+            order=order, cup=cup_obj, low_sugar=zero_sugar
         )
         print(f"OrderItem {order_num} {menu_item} created")
 
@@ -153,7 +151,7 @@ def run():
             print(f"OrderPaidAmount {order_num} ${total_charged} updated")
 
         order_item = OrderItem.objects.create(
-            order=order, cup=cup_obj, low_sugar=zero_sugar, is_prepared=True
+            order=order, cup=cup_obj, low_sugar=zero_sugar
         )
         print(f"OrderItem {order_num} Custom Order created")
 
@@ -208,4 +206,3 @@ def run():
         if charged == 0:
             OrderDiscount.objects.create(order=order, discount=free_discount)
             print(f"OrderDiscount {order_num} FREE created")
-

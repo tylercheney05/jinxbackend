@@ -72,7 +72,6 @@ class OrderItemSerializer(serializers.ModelSerializer):
             "note",
             "custom_order__soda",
             "custom_order_flavors",
-            "is_prepared",
             "order_item_name",
             "soda_name",
             "order__id",
@@ -80,7 +79,7 @@ class OrderItemSerializer(serializers.ModelSerializer):
             "order__location",
             "order_item_flavors",
         ]
-        read_only_fields = ["id", "is_prepared"]
+        read_only_fields = ["id"]
 
     def get_price(self, obj):
         if self.context:

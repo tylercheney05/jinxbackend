@@ -2,9 +2,9 @@ from django.conf import settings
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.db.models import F, Sum
+from django.utils import timezone
 
 from cups.models import Cup
-from django.utils import timezone
 
 
 class Order(models.Model):
@@ -28,7 +28,7 @@ class Order(models.Model):
 
     def __str__(self):
         return f"Order {self.id} - {self.date}"
-    
+
     def save(self, *args, **kwargs):
         if not self.date:
             self.date = timezone.now()
@@ -50,7 +50,6 @@ class OrderItem(models.Model):
     cup = models.ForeignKey("cups.Cup", on_delete=models.CASCADE)
     low_sugar = models.BooleanField(default=False)
     note = models.TextField(blank=True, default="")
-    is_prepared = models.BooleanField(default=False)
 
     def __str__(self):
         return f"OrderItem {self.id} - {self.order}"

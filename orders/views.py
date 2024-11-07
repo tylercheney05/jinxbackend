@@ -57,10 +57,9 @@ class OrderViewSet(
     def update_in_progress(self, request, *args, **kwargs):
         obj = self.get_object()
         is_in_progress = request.data.get("is_in_progress", False)
+        is_complete = request.data.get("is_complete", False)
         obj.is_in_progress = is_in_progress
-
-        if not is_in_progress:
-            obj.items.all().update(is_prepared=False)
+        obj.is_complete = is_complete
         obj.save()
         return Response(self.get_serializer(obj).data)
 
@@ -74,20 +73,6 @@ class OrderItemViewSet(
     serializer_class = OrderItemSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ["order__is_paid", "order__collected_by", "order"]
-
-    @action(detail=True, methods=["patch"], url_path="prepare-order-item")
-    def prepare_order_item(self, request, *args, **kwargs):
-        obj = self.get_object()
-        is_prepared = request.data.get("is_prepared", False)
-        obj.is_prepared = is_prepared
-        obj.save()
-
-        remaining_order_items = obj.order.items.filter(is_prepared=False)
-        if not remaining_order_items.exists():
-            obj.order.is_complete = True
-            obj.order.is_in_progress = False
-            obj.order.save()
-        return Response(OrderDetailSerializer(obj.order).data)
 
 
 class OrderNameViewSet(

@@ -86,8 +86,6 @@ class OrderConsumer(AsyncWebsocketConsumer):
         order = Order.objects.get(id=order_id)
         order.is_in_progress = order_in_progress
         order.save()
-        if not order_in_progress:
-            order.items.all().update(is_prepared=False)
 
     # Receive pending_orders from room group
     async def receive_orders(self, event):
