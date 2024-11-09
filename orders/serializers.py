@@ -271,12 +271,14 @@ class OrderNameSerializer(serializers.ModelSerializer):
 
 class OrderDetailSerializer(serializers.ModelSerializer):
     order_items = OrderItemSerializer(many=True, read_only=True, source="items")
+    order_name__name = serializers.CharField(source="order_name.name", read_only=True)
 
     class Meta:
         model = Order
         fields = [
             "id",
             "order_items",
+            "order_name__name",
         ]
 
 
