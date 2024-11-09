@@ -1,5 +1,5 @@
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import filters, mixins, permissions, viewsets
+from rest_framework import filters, mixins, permissions, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
@@ -65,9 +65,12 @@ class OrderViewSet(
 
 
 class OrderItemViewSet(
-    viewsets.GenericViewSet, mixins.CreateModelMixin, mixins.ListModelMixin
+    viewsets.GenericViewSet,
+    mixins.CreateModelMixin,
+    mixins.ListModelMixin,
+    mixins.DestroyModelMixin,
 ):
-    http_method_names = ["post", "get", "patch"]
+    http_method_names = ["post", "get", "patch", "delete"]
     queryset = OrderItem.objects.all()
     permission_classes = [permissions.IsAdminUser]
     serializer_class = OrderItemSerializer
