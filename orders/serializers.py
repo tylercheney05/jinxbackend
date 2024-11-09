@@ -128,6 +128,10 @@ class OrderItemSerializer(serializers.ModelSerializer):
     def get_soda_name(self, obj):
         if hasattr(obj, "menu_item"):
             return obj.menu_item.menu_item.soda.name
+        if hasattr(obj, "custom_order"):
+            return obj.custom_order.custom_order.soda.name
+        if hasattr(obj, "menu_item_custom_order"):
+            return obj.menu_item_custom_order.menu_item_custom_order.soda.name
         return ""
 
     def get_order_item_name(self, obj):
