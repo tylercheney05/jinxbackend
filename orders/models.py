@@ -171,7 +171,7 @@ class CustomOrderFlavor(models.Model):
     quantity = models.PositiveIntegerField()
 
     def __str__(self):
-        return f"Custom Order {self.object_id} {self.flavor.name} {self.quantity}"
+        return f"Custom Order {self.id} {self.flavor.name} {self.quantity}"
 
 
 class CustomOrderFlavorCustomOrder(models.Model):
