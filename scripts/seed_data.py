@@ -546,7 +546,6 @@ def run():
     print("The Weeknd created")
     OrderName.objects.get_or_create(name="Post Malone")
     print("Post Malone created")
-    
 
     print("\n")
     print("--------------------")
@@ -554,7 +553,7 @@ def run():
 
     ## Add Discounts
     free_discount, _ = Discount.objects.get_or_create(name="Free", code="FREE")
-    DiscountPercentOff(discount=free_discount, percent_off=1)
+    DiscountPercentOff.objects.create(discount=free_discount, percent_off=1)
     print("Free discount created")
 
     lime_bois_am_perk, _ = Discount.objects.get_or_create(
