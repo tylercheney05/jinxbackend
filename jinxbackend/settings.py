@@ -35,7 +35,7 @@ DEBUG = True if os.environ["NODE_ENV"] == "development" else False
 HOST = str(os.environ.get("HOST"))
 REDIS_PORT = int(os.environ.get("REDIS_PORT"))
 
-ALLOWED_HOSTS = ['.herokuapp.com', 'localhost:8000', '127.0.0.1:8000']
+ALLOWED_HOSTS = [".herokuapp.com", "localhost:8000", "127.0.0.1:8000"]
 
 
 # Application definition
@@ -148,7 +148,9 @@ USE_TZ = True
 
 STATIC_URL = "/static/"
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
-STATICFILES_DIRS = [os.path.join(BASE_DIR, "static"),]
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static"),
+]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
@@ -172,6 +174,8 @@ SIMPLE_JWT = {
 
 AUTH_USER_MODEL = "users.User"
 
+ASGI_THREADS = 20
+
 ASGI_APPLICATION = "jinxbackend.asgi.application"
 CHANNEL_LAYERS = {
     "default": {
@@ -182,4 +186,5 @@ CHANNEL_LAYERS = {
     },
 }
 import django_heroku
+
 django_heroku.settings(locals())
