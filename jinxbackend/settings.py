@@ -174,7 +174,7 @@ SIMPLE_JWT = {
 
 AUTH_USER_MODEL = "users.User"
 
-ASGI_THREADS = 20
+ASGI_THREADS = int(os.environ.get("ASGI_THREADS", 5))
 
 ASGI_APPLICATION = "jinxbackend.asgi.application"
 CHANNEL_LAYERS = {
