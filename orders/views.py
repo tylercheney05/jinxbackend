@@ -1,3 +1,5 @@
+import json
+
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, mixins, permissions, status, viewsets
 from rest_framework.decorators import action
@@ -19,6 +21,7 @@ from orders.serializers import (
     OrderNameSerializer,
     OrderSerializer,
 )
+from orders.utils import get_price
 
 
 class OrderViewSet(
@@ -76,6 +79,33 @@ class OrderItemViewSet(
     serializer_class = OrderItemSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ["order__is_paid", "order__collected_by", "order"]
+
+    @action(detail=False, methods=["get"], url_path="price")
+    def price(self, request, *args, **kwargs):
+        cup_id = int(request.query_params.get("cup", "0"))
+        menu_item_id = (
+            int(request.query_params.get("menu_item", "0"))
+            if request.query_params.get("menu_item")
+            else None
+        )
+        custom_order__soda_id = (
+            int(request.query_params.get("custom_order__soda", "0"))
+            if request.query_params.get("custom_order__soda", None)
+            else None
+        )
+        custom_order_flavor_ids = (
+            json.loads(request.query_params.get("custom_order_flavors", "[]"))
+            if request.query_params.get("custom_order_flavors", None)
+            else []
+        )
+        return Response(
+            {
+                "price": get_price(
+                    cup_id, menu_item_id, custom_order__soda_id, custom_order_flavor_ids
+                )
+            },
+            status=status.HTTP_200_OK,
+        )
 
 
 class OrderNameViewSet(
