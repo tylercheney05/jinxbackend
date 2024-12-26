@@ -9,10 +9,5 @@ class LocationSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "name",
-            "address",
-            "city",
-            "state",
-            "zip_code",
-            "is_event",
         ]
         read_only_fields = ["id"]
