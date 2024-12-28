@@ -8,7 +8,6 @@ from cups.models import Cup
 
 
 class Order(models.Model):
-    # TODO: update back to auto_now_add=True
     date = models.DateTimeField()
     collected_by = models.ForeignKey(
         settings.AUTH_USER_MODEL,

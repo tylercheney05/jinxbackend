@@ -74,5 +74,5 @@ class MenuItemSerializer(serializers.ModelSerializer):
 class LimitedTimePromotionSerializer(serializers.ModelSerializer):
     class Meta:
         model = LimitedTimePromotion
-        fields = ["id", "name"]
+        fields = ["id", "name", "is_archived"]
         read_only_fields = ["id"]

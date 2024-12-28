@@ -26,11 +26,11 @@ class LimitedTimePromotionViewSet(
     AutocompleteViewSetMixin,
     mixins.CreateModelMixin,
     mixins.ListModelMixin,
+    mixins.UpdateModelMixin,
 ):
-    http_method_names = ["post", "get"]
+    http_method_names = ["post", "get", "put"]
     queryset = LimitedTimePromotion.objects.all()
     permission_classes = [IsSystemAdminUserOrIsStaffUserReadOnly]
     serializer_class = LimitedTimePromotionSerializer
-
-    def list(self, request, *args, **kwargs):
-        return super().list(request, *args, **kwargs)
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ["is_archived"]

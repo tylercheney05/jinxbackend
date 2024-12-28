@@ -14,4 +14,5 @@ class MenuItemFilter(django_filters.FilterSet):
             "soda",
             "limited_time_promotions__limited_time_promo",
             "limited_time_promotions__isnull",
+            "limited_time_promotions__limited_time_promo__is_archived",
         ]
