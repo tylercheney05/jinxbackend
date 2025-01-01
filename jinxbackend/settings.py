@@ -177,15 +177,16 @@ AUTH_USER_MODEL = "users.User"
 ASGI_THREADS = int(os.environ.get("ASGI_THREADS", 5))
 
 ASGI_APPLICATION = "jinxbackend.asgi.application"
-REDIS_URL = (
-    os.environ.get("REDIS_URL", "redis://localhost:6379") + "?ssl_cert_reqs=none"
+REDIS_URL = os.environ.get("REDIS_URL", None)
+REVISED_REDIS_URL = (
+    REDIS_URL + "?ssl_cert_reqs=none" if REDIS_URL else "redis://localhost:6379"
 )
 
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [REDIS_URL],
+            "hosts": [REVISED_REDIS_URL],
         },
     },
 }
