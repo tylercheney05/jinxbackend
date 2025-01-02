@@ -48,6 +48,9 @@ class OrderConsumer(AsyncWebsocketConsumer):
         order_complete_exists = "order_complete" in text_data_json
         order_complete = text_data_json.get("order_complete", False)
 
+        delete_order_exists = "delete_order" in text_data_json
+        delete_order = text_data_json.get("delete_order", False)
+
         order_id = text_data_json.get("order_id", False)
 
         if order_in_progress_exists and order_id:
@@ -55,6 +58,9 @@ class OrderConsumer(AsyncWebsocketConsumer):
 
         if order_complete_exists and order_id:
             await self.mark_order_complete(order_id, order_complete)
+
+        if delete_order_exists and delete_order and order_id:
+            await self.delete_order(order_id)
 
         pending_orders = await self.get_pending_orders()
 
@@ -100,6 +106,10 @@ class OrderConsumer(AsyncWebsocketConsumer):
         order = Order.objects.get(id=order_id)
         order.is_complete = order_complete
         order.save()
+
+    @database_sync_to_async
+    def delete_order(self, order_id):
+        Order.objects.get(id=order_id).delete()
 
     # Receive pending_orders from room group
     async def receive_orders(self, event):
