@@ -25,9 +25,12 @@ from orders.utils import get_price
 
 
 class OrderViewSet(
-    viewsets.GenericViewSet, mixins.ListModelMixin, mixins.RetrieveModelMixin
+    viewsets.GenericViewSet,
+    mixins.ListModelMixin,
+    mixins.RetrieveModelMixin,
+    mixins.DestroyModelMixin,
 ):
-    http_method_names = ["get", "patch"]
+    http_method_names = ["get", "patch", "delete"]
     queryset = Order.objects.all()
     permission_classes = [permissions.IsAdminUser]
     serializer_class = OrderSerializer
