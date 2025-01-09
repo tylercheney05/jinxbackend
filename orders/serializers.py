@@ -147,7 +147,10 @@ class OrderItemSerializer(serializers.ModelSerializer):
                 flavor_names = ", ".join(flavors[:-1]) + " and " + flavors[-1]
             else:
                 flavor_names = flavors[0] if flavors else ""
-            return f"Custom Drink: {obj.custom_order.custom_order.soda.name} with {flavor_names}"
+            finish_text = f" with {flavor_names}" if flavor_names else ""
+            return (
+                f"Custom Drink: {obj.custom_order.custom_order.soda.name}{finish_text}"
+            )
         elif hasattr(obj, "menu_item"):
             return obj.menu_item.menu_item.name
         elif hasattr(obj, "menu_item_custom_order"):

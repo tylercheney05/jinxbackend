@@ -152,12 +152,14 @@ class CustomOrder(models.Model):
                     * F("custom_order_flavor__flavor__flavor_group__price")
                 )
             ).aggregate(total_sum_product=Sum("quantity_price"))
+            total_sum_product = price.get("total_sum_product", 0)
+            flavors_price = total_sum_product if total_sum_product else 0
             cup_prices.append(
                 {
                     "id": cup.id,
                     "size": cup.size,
                     "size__display": cup.get_size_display(),
-                    "price": cup_price + price.get("total_sum_product", 0),
+                    "price": cup_price + flavors_price,
                 }
             )
         return cup_prices
