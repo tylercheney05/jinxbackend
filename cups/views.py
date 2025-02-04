@@ -5,10 +5,10 @@ from rest_framework import mixins, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
+from core.mixins import AutocompleteViewSetMixin
 from core.permissions import IsSystemAdminUserOrIsStaffUserReadOnly
-from core.viewsets import AutocompleteViewSetMixin
 from cups.models import Cup
-from cups.serializers import CupSerializer
+from cups.serializers import CupDetailSerializer, CupSerializer
 
 
 class CupViewSet(
@@ -22,6 +22,11 @@ class CupViewSet(
     queryset = Cup.objects.all()
     serializer_class = CupSerializer
     permission_classes = [IsSystemAdminUserOrIsStaffUserReadOnly]
+
+    def get_serializer_class(self):
+        if self.action == "retrieve":
+            return CupDetailSerializer
+        return super().get_serializer_class()
 
     @action(detail=False, methods=["get"], url_path="autocomplete")
     def autocomplete(self, request, *args, **kwargs):

@@ -1,32 +1,12 @@
+from django.apps import apps
 from rest_framework import serializers
 
-from menuitems.models import (
-    LimitedTimeMenuItem,
-    LimitedTimePromotion,
-    MenuItem,
-    MenuItemFlavor,
+from menuitems.models import MenuItem
+from menuitems.serializers import (
+    MenuItemFlavorDetailSerializer,
+    MenuItemFlavorSerializer,
 )
-
-
-class MenuItemFlavorSerializer(serializers.ModelSerializer):
-    flavor__name = serializers.CharField(source="flavor.name", read_only=True)
-    flavor__flavor_group__uom__display = serializers.SerializerMethodField(
-        read_only=True
-    )
-    cup_quantities = serializers.DictField(read_only=True)
-
-    class Meta:
-        model = MenuItemFlavor
-        fields = [
-            "flavor__name",
-            "quantity",
-            "flavor__flavor_group__uom__display",
-            "flavor",
-            "cup_quantities",
-        ]
-
-    def get_flavor__flavor_group__uom__display(self, obj):
-        return obj.flavor.flavor_group.get_uom_display()
+from sodas.serializers import SodaSerializer
 
 
 class MenuItemSerializer(serializers.ModelSerializer):
@@ -59,20 +39,26 @@ class MenuItemSerializer(serializers.ModelSerializer):
         limited_time_promo = validated_data.pop("limited_time_promo", None)
         menu_item = MenuItem.objects.create(**validated_data)
         for flavor in flavors:
-            MenuItemFlavor.objects.create(
+            menu_item_flavor_model = apps.get_model("menuitems", "MenuItemFlavor")
+            menu_item_flavor_model.objects.create(
                 menu_item=menu_item,
                 flavor_id=flavor["flavor"],
                 quantity=flavor["quantity"],
             )
         if limited_time_promo:
-            LimitedTimeMenuItem.objects.create(
+            limited_item_menu_item_model = apps.get_model(
+                "menuitems", "LimitedTimeMenuItem"
+            )
+            limited_item_menu_item_model.objects.create(
                 menu_item=menu_item, limited_time_promo_id=limited_time_promo
             )
         return menu_item
 
 
-class LimitedTimePromotionSerializer(serializers.ModelSerializer):
+class MenuItemDetailSerializer(serializers.ModelSerializer):
+    soda = SodaSerializer(read_only=True)
+    flavors = MenuItemFlavorDetailSerializer(many=True, read_only=True)
+
     class Meta:
-        model = LimitedTimePromotion
-        fields = ["id", "name", "is_archived"]
-        read_only_fields = ["id"]
+        model = MenuItem
+        fields = ["id", "name", "soda", "flavors"]

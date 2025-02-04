@@ -1,17 +1,7 @@
 from rest_framework import serializers
 
-from flavors.models import Flavor, FlavorGroup
-
-
-class FlavorGroupSerializer(serializers.ModelSerializer):
-    uom__display = serializers.SerializerMethodField(read_only=True)
-
-    class Meta:
-        model = FlavorGroup
-        fields = ["name", "uom", "uom__display", "price"]
-
-    def get_uom__display(self, obj):
-        return obj.get_uom_display()
+from flavors.models import Flavor
+from flavors.serializers import FlavorGroupDetailSerializer
 
 
 class FlavorSerializer(serializers.ModelSerializer):
@@ -38,3 +28,12 @@ class FlavorSerializer(serializers.ModelSerializer):
 
     def get_flavor_group__uom__display(self, obj):
         return obj.flavor_group.get_uom_display()
+
+
+class FlavorDetailSerializer(serializers.ModelSerializer):
+    flavor_group = FlavorGroupDetailSerializer(read_only=True)
+
+    class Meta:
+        model = Flavor
+        fields = ["id", "name", "flavor_group", "sugar_free_available"]
+        read_only_fields = ["id", "name", "sugar_free_available"]

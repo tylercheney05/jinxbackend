@@ -1,7 +1,7 @@
 from rest_framework import filters, mixins, viewsets
 
+from core.mixins import AutocompleteViewSetMixin
 from core.permissions import IsSystemAdminUser
-from core.viewsets import AutocompleteViewSetMixin
 from flavors.models import Flavor, FlavorGroup
 from flavors.serializers import FlavorGroupSerializer, FlavorSerializer
 

@@ -1,8 +1,8 @@
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import mixins, viewsets
 
+from core.mixins import AutocompleteViewSetMixin
 from core.permissions import IsSystemAdminUserOrIsStaffUserReadOnly
-from core.viewsets import AutocompleteViewSetMixin
 from menuitems.filters import MenuItemFilter
 from menuitems.models import LimitedTimePromotion, MenuItem
 from menuitems.serializers import LimitedTimePromotionSerializer, MenuItemSerializer
