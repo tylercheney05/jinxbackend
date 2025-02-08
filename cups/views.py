@@ -8,7 +8,7 @@ from rest_framework.response import Response
 from core.mixins import AutocompleteViewSetMixin
 from core.permissions import IsSystemAdminUserOrIsStaffUserReadOnly
 from cups.models import Cup
-from cups.serializers import CupDetailSerializer, CupSerializer
+from cups.serializers import CupDetailSerializer, CupSerializer, CupSummarySerializer
 
 
 class CupViewSet(
@@ -18,15 +18,17 @@ class CupViewSet(
     mixins.ListModelMixin,
     mixins.RetrieveModelMixin,
 ):
+    model = Cup
+    queryset = model.objects.all()
     http_method_names = ["get", "post"]
-    queryset = Cup.objects.all()
-    serializer_class = CupSerializer
     permission_classes = [IsSystemAdminUserOrIsStaffUserReadOnly]
 
     def get_serializer_class(self):
         if self.action == "retrieve":
             return CupDetailSerializer
-        return super().get_serializer_class()
+        elif self.action == "list":
+            return CupSummarySerializer
+        return CupSerializer
 
     @action(detail=False, methods=["get"], url_path="autocomplete")
     def autocomplete(self, request, *args, **kwargs):
