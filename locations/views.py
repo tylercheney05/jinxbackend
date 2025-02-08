@@ -14,7 +14,8 @@ class LocationViewSet(
     mixins.RetrieveModelMixin,
 ):
     http_method_names = ["post", "get"]
-    queryset = Location.objects.all()
+    model = Location
+    queryset = model.objects.all()
     permission_classes = [IsSystemAdminUserOrIsStaffUserReadOnly]
     serializer_class = LocationSerializer
     autocomplete_fields = ["id", "name"]

@@ -31,6 +31,7 @@ class TestFlavorSerializer(TestCase):
 
 class TestFlavorDetailSerializer(TestCase):
     def test_sub_class(self):
+        self.assertTrue(issubclass(FlavorDetailSerializer, serializers.ModelSerializer))
         self.assertTrue(issubclass(FlavorDetailSerializer, ReadOnlyModelSerializer))
 
     def test_serializer(self):
@@ -55,6 +56,9 @@ class TestFlavorDetailSerializer(TestCase):
 
 class TestFlavorSummarySerializer(TestCase):
     def test_sub_class(self):
+        self.assertTrue(
+            issubclass(FlavorSummarySerializer, serializers.ModelSerializer)
+        )
         self.assertTrue(issubclass(FlavorSummarySerializer, ReadOnlyModelSerializer))
 
     def test_serializer(self):

@@ -38,6 +38,7 @@ class TestCupSummarySerializer(TestCase):
         )
 
     def test_sub_class(self):
+        self.assertTrue(issubclass(CupSummarySerializer, serializers.ModelSerializer))
         self.assertTrue(issubclass(CupSummarySerializer, ReadOnlyModelSerializer))
 
 
@@ -56,4 +57,5 @@ class TestCupDetailSerializer(TestCase):
         )
 
     def test_sub_class(self):
+        self.assertTrue(issubclass(CupDetailSerializer, serializers.ModelSerializer))
         self.assertTrue(issubclass(CupDetailSerializer, ReadOnlyModelSerializer))
