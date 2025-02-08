@@ -5,6 +5,11 @@ from core.serializers import ReadOnlyModelSerializer
 
 
 class TestReadOnlyModelSerializer(TestCase):
+    def test_sub_class(self):
+        self.assertTrue(
+            issubclass(ReadOnlyModelSerializer, serializers.ModelSerializer)
+        )
+
     def test_create(self):
         serializer = ReadOnlyModelSerializer()
         with self.assertRaises(serializers.ValidationError) as error:

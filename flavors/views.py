@@ -3,7 +3,13 @@ from rest_framework import filters, mixins, viewsets
 from core.mixins import AutocompleteViewSetMixin
 from core.permissions import IsSystemAdminUser
 from flavors.models import Flavor, FlavorGroup
-from flavors.serializers import FlavorGroupSerializer, FlavorSerializer
+from flavors.serializers import (
+    FlavorDetailSerializer,
+    FlavorGroupSerializer,
+    FlavorGroupSummarySerializer,
+    FlavorSerializer,
+    FlavorSummarySerializer,
+)
 
 
 class FlavorGroupViewSet(
@@ -12,11 +18,16 @@ class FlavorGroupViewSet(
     mixins.CreateModelMixin,
     mixins.ListModelMixin,
 ):
+    model = FlavorGroup
+    queryset = model.objects.all()
     http_method_names = ["post", "get"]
-    queryset = FlavorGroup.objects.all()
     permission_classes = [IsSystemAdminUser]
-    serializer_class = FlavorGroupSerializer
     autocomplete_fields = ["id", "name"]
+
+    def get_serializer_class(self):
+        if self.action == "list":
+            return FlavorGroupSummarySerializer
+        return FlavorGroupSerializer
 
 
 class FlavorViewSet(
@@ -27,10 +38,17 @@ class FlavorViewSet(
     mixins.RetrieveModelMixin,
 ):
     http_method_names = ["post", "get"]
-    queryset = Flavor.objects.all()
+    model = Flavor
+    queryset = model.objects.all()
     permission_classes = [IsSystemAdminUser]
-    serializer_class = FlavorSerializer
     autocomplete_fields = ["id", "name"]
     filter_backends = [filters.OrderingFilter]
     ordering_fields = ["flavor_group__name", "name"]
     ordering = ["flavor_group__name", "name"]
+
+    def get_serializer_class(self):
+        if self.action == "retrieve":
+            return FlavorDetailSerializer
+        elif self.action == "list":
+            return FlavorSummarySerializer
+        return FlavorSerializer

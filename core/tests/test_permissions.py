@@ -3,10 +3,18 @@ from unittest.mock import MagicMock
 
 from django.test import TestCase
 
-from core.permissions import IsSystemAdminUser, IsSystemAdminUserOrIsStaffUserReadOnly
+from core.permissions import (
+    BasePermission,
+    IsAdminUser,
+    IsSystemAdminUser,
+    IsSystemAdminUserOrIsStaffUserReadOnly,
+)
 
 
 class TestIsSystemAdminUser(TestCase):
+    def test_sub_class(self):
+        self.assertTrue(issubclass(IsSystemAdminUser, IsAdminUser))
+
     def test_user_is_admin(self):
         request = MagicMock()
         request.user.is_admin = True
@@ -27,6 +35,10 @@ class TestIsSystemAdminUser(TestCase):
 
 
 class TestIsSystemAdminUserOrIsStaffUserReadOnly(TestCase):
+    def test_sub_class(self):
+        self.assertTrue(
+            issubclass(IsSystemAdminUserOrIsStaffUserReadOnly, BasePermission)
+        )
 
     def test_user_is_admin(self):
         request = MagicMock()

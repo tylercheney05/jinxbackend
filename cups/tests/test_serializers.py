@@ -1,6 +1,8 @@
 from django.test import TestCase
 from model_bakery import baker
+from rest_framework import serializers
 
+from core.serializers import ReadOnlyModelSerializer
 from cups.models import Cup
 from cups.serializers import CupDetailSerializer, CupSerializer, CupSummarySerializer
 
@@ -19,6 +21,9 @@ class TestCupSerializer(TestCase):
             },
         )
 
+    def test_sub_class(self):
+        self.assertTrue(issubclass(CupSerializer, serializers.ModelSerializer))
+
 
 class TestCupSummarySerializer(TestCase):
     def test_serializer(self):
@@ -31,6 +36,9 @@ class TestCupSummarySerializer(TestCase):
                 "size": {"value": cup.size, "display": cup.get_size_display()},
             },
         )
+
+    def test_sub_class(self):
+        self.assertTrue(issubclass(CupSummarySerializer, ReadOnlyModelSerializer))
 
 
 class TestCupDetailSerializer(TestCase):
@@ -46,3 +54,6 @@ class TestCupDetailSerializer(TestCase):
                 "conversion_factor": str(cup.conversion_factor),
             },
         )
+
+    def test_sub_class(self):
+        self.assertTrue(issubclass(CupDetailSerializer, ReadOnlyModelSerializer))

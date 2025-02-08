@@ -2,14 +2,16 @@ from unittest.mock import MagicMock
 
 from django.test import TestCase
 from model_bakery import baker
+from rest_framework import mixins, viewsets
 
+from core.mixins import AutocompleteViewSetMixin
 from core.permissions import IsSystemAdminUserOrIsStaffUserReadOnly
 from cups.models import Cup
 from cups.serializers import CupDetailSerializer, CupSerializer, CupSummarySerializer
 from cups.views import CupViewSet
 
 
-class TestCupViewSetVars(TestCase):
+class TestCupViewSetBase(TestCase):
     def test_http_method_names(self):
         view = CupViewSet()
         self.assertEqual(view.http_method_names, ["get", "post"])
@@ -29,6 +31,14 @@ class TestCupViewSetVars(TestCase):
         self.assertEqual(
             view.permission_classes, [IsSystemAdminUserOrIsStaffUserReadOnly]
         )
+
+    def test_sub_classes(self):
+        view = CupViewSet()
+        self.assertTrue(issubclass(view.__class__, viewsets.GenericViewSet))
+        self.assertTrue(issubclass(view.__class__, mixins.CreateModelMixin))
+        self.assertTrue(issubclass(view.__class__, mixins.ListModelMixin))
+        self.assertTrue(issubclass(view.__class__, mixins.RetrieveModelMixin))
+        self.assertTrue(issubclass(view.__class__, AutocompleteViewSetMixin))
 
 
 class TestCupViewSetGetSerializerClass(TestCase):
