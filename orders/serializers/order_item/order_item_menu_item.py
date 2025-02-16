@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from menuitems.serializers import MenuItemDetailSerializer
+from menuitems.serializers.menu_item import MenuItemDetailSerializer
 from orders.models import OrderItemMenuItem
 
 

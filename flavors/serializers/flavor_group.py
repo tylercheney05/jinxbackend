@@ -4,6 +4,13 @@ from core.serializers import ReadOnlyModelSerializer
 from flavors.models import FlavorGroup
 
 
+def get_uom(obj):
+    return {
+        "value": obj.uom,
+        "display": obj.get_uom_display(),
+    }
+
+
 class FlavorGroupSerializer(serializers.ModelSerializer):
     class Meta:
         model = FlavorGroup
@@ -11,7 +18,7 @@ class FlavorGroupSerializer(serializers.ModelSerializer):
 
 
 class FlavorGroupSummarySerializer(ReadOnlyModelSerializer):
-    uom = serializers.SerializerMethodField(read_only=True)
+    uom = serializers.SerializerMethodField()
 
     class Meta:
         model = FlavorGroup
@@ -23,21 +30,15 @@ class FlavorGroupSummarySerializer(ReadOnlyModelSerializer):
         ]
 
     def get_uom(self, obj):
-        return {
-            "value": obj.uom,
-            "display": obj.get_uom_display(),
-        }
+        return get_uom(obj)
 
 
 class FlavorGroupDetailSerializer(ReadOnlyModelSerializer):
-    uom = serializers.SerializerMethodField(read_only=True)
+    uom = serializers.SerializerMethodField()
 
     class Meta:
         model = FlavorGroup
         fields = ["id", "uom"]
 
     def get_uom(self, obj):
-        return {
-            "value": obj.uom,
-            "display": obj.get_uom_display(),
-        }
+        return get_uom(obj)

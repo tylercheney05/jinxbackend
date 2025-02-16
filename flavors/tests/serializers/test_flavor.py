@@ -6,6 +6,8 @@ from core.serializers import ReadOnlyModelSerializer
 from flavors.models import Flavor
 from flavors.serializers import (
     FlavorDetailSerializer,
+    FlavorGroupDetailSerializer,
+    FlavorGroupSummarySerializer,
     FlavorSerializer,
     FlavorSummarySerializer,
 )
@@ -15,18 +17,20 @@ class TestFlavorSerializer(TestCase):
     def test_sub_class(self):
         self.assertTrue(issubclass(FlavorSerializer, serializers.ModelSerializer))
 
-    def test_serializer(self):
-        flavor = baker.make(Flavor)
-        serializer = FlavorSerializer(flavor)
+    def test_model(self):
+        serializer = FlavorSerializer()
+        self.assertEqual(serializer.Meta.model, Flavor)
+
+    def test_fields(self):
+        serializer = FlavorSerializer()
         self.assertEqual(
-            serializer.data,
-            {
-                "id": flavor.id,
-                "name": flavor.name,
-                "flavor_group": flavor.flavor_group.id,
-                "sugar_free_available": flavor.sugar_free_available,
-            },
+            serializer.Meta.fields,
+            ["id", "name", "flavor_group", "sugar_free_available"],
         )
+
+    def test_read_only_fields(self):
+        serializer = FlavorSerializer()
+        self.assertEqual(serializer.Meta.read_only_fields, ["id"])
 
 
 class TestFlavorDetailSerializer(TestCase):
@@ -34,23 +38,21 @@ class TestFlavorDetailSerializer(TestCase):
         self.assertTrue(issubclass(FlavorDetailSerializer, serializers.ModelSerializer))
         self.assertTrue(issubclass(FlavorDetailSerializer, ReadOnlyModelSerializer))
 
-    def test_serializer(self):
-        flavor = baker.make(Flavor)
-        serializer = FlavorDetailSerializer(flavor)
+    def test_flavor_group(self):
+        serializer = FlavorDetailSerializer()
+        self.assertIsInstance(
+            serializer.fields["flavor_group"], FlavorGroupDetailSerializer
+        )
+
+    def test_model(self):
+        serializer = FlavorDetailSerializer()
+        self.assertEqual(serializer.Meta.model, Flavor)
+
+    def test_fields(self):
+        serializer = FlavorDetailSerializer()
         self.assertEqual(
-            serializer.data,
-            {
-                "id": flavor.id,
-                "name": flavor.name,
-                "flavor_group": {
-                    "id": flavor.flavor_group.id,
-                    "uom": {
-                        "value": flavor.flavor_group.uom,
-                        "display": flavor.flavor_group.get_uom_display(),
-                    },
-                },
-                "sugar_free_available": flavor.sugar_free_available,
-            },
+            serializer.Meta.fields,
+            ["id", "name", "flavor_group", "sugar_free_available"],
         )
 
 
@@ -61,22 +63,16 @@ class TestFlavorSummarySerializer(TestCase):
         )
         self.assertTrue(issubclass(FlavorSummarySerializer, ReadOnlyModelSerializer))
 
-    def test_serializer(self):
-        flavor = baker.make(Flavor)
-        serializer = FlavorSummarySerializer(flavor)
-        self.assertEqual(
-            serializer.data,
-            {
-                "id": flavor.id,
-                "name": flavor.name,
-                "flavor_group": {
-                    "id": flavor.flavor_group.id,
-                    "name": flavor.flavor_group.name,
-                    "uom": {
-                        "value": flavor.flavor_group.uom,
-                        "display": flavor.flavor_group.get_uom_display(),
-                    },
-                    "price": str(flavor.flavor_group.price),
-                },
-            },
+    def test_flavor_group(self):
+        serializer = FlavorSummarySerializer()
+        self.assertIsInstance(
+            serializer.fields["flavor_group"], FlavorGroupSummarySerializer
         )
+
+    def test_model(self):
+        serializer = FlavorSummarySerializer()
+        self.assertEqual(serializer.Meta.model, Flavor)
+
+    def test_fields(self):
+        serializer = FlavorSummarySerializer()
+        self.assertEqual(serializer.Meta.fields, ["id", "name", "flavor_group"])

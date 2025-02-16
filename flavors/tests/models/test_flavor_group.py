@@ -22,3 +22,22 @@ class TestFlavorGroup(TestCase):
         self.assertEqual(uom_choices["wedge"], "Wedge")
         self.assertEqual(uom_choices["single"], "Single")
         self.assertEqual(uom_choices["pinch"], "Pinch")
+
+    def test_name(self):
+        flavor_group = baker.make(FlavorGroup)
+        field = flavor_group._meta.get_field("name")
+        self.assertIsInstance(field, models.CharField)
+        self.assertEqual(field.max_length, 200)
+
+    def test_uom(self):
+        flavor_group = baker.make(FlavorGroup)
+        field = flavor_group._meta.get_field("uom")
+        self.assertIsInstance(field, models.CharField)
+        self.assertEqual(field.max_length, 10)
+
+    def test_price(self):
+        flavor_group = baker.make(FlavorGroup)
+        field = flavor_group._meta.get_field("price")
+        self.assertIsInstance(field, models.DecimalField)
+        self.assertEqual(field.max_digits, 5)
+        self.assertEqual(field.decimal_places, 2)

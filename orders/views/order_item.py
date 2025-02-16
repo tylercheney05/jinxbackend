@@ -1,5 +1,6 @@
 import json
 
+from django.db import transaction
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import mixins, permissions, status, viewsets
 from rest_framework.decorators import action
@@ -22,6 +23,10 @@ class OrderItemViewSet(
     filter_backends = [DjangoFilterBackend]
     serializer_class = OrderItemSerializer
     filterset_fields = ["order__is_paid", "order__collected_by", "order"]
+
+    @transaction.atomic
+    def create(self, request, *args, **kwargs):
+        return super().create(request, *args, **kwargs)
 
     @action(detail=False, methods=["get"], url_path="price")
     def price(self, request, *args, **kwargs):

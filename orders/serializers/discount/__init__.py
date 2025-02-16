@@ -1,4 +1,3 @@
-from django.db import transaction
 from rest_framework import serializers
 
 from orders.models import Discount, DiscountCupSize, DiscountPercentOff, DiscountPrice
@@ -29,7 +28,6 @@ class DiscountSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ["id"]
 
-    @transaction.atomic
     def create(self, validated_data):
         percent_or_price = validated_data.pop("percent_or_price")
         percent = validated_data.pop("percent", None)

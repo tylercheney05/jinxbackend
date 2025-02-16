@@ -85,6 +85,10 @@ class DiscountViewSet(
     serializer_class = DiscountSerializer
     autocomplete_fields = ["id", "name"]
 
+    @transaction.atomic
+    def create(self, request, *args, **kwargs):
+        return super().create(request, *args, **kwargs)
+
 
 class OrderPaidAmountViewSet(
     viewsets.GenericViewSet,

@@ -99,7 +99,6 @@ class OrderItemSerializer(serializers.ModelSerializer):
             return found_object["price"]
         return None
 
-    @transaction.atomic
     def create(self, validated_data):
         menu_item_id = validated_data.pop("menu_item", None)
         order = validated_data.pop("order")
