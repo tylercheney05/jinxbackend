@@ -1,5 +1,5 @@
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import mixins, viewsets
+from rest_framework import filters, mixins, viewsets
 
 from core.permissions import IsSystemAdminUserOrIsStaffUserReadOnly
 from core.viewsets import AutocompleteViewSetMixin
@@ -18,8 +18,10 @@ class MenuItemViewSet(
     queryset = MenuItem.objects.all()
     permission_classes = [IsSystemAdminUserOrIsStaffUserReadOnly]
     serializer_class = MenuItemSerializer
-    filter_backends = [DjangoFilterBackend]
+    filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
     filterset_class = MenuItemFilter
+    ordering_fields = ["name"]
+    ordering = ["name"]
 
 
 class LimitedTimePromotionViewSet(

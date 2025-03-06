@@ -5,6 +5,7 @@ from django.db.models import F, Sum
 from django.utils import timezone
 
 from cups.models import Cup
+from orders.managers import OrderManager
 
 
 class Order(models.Model):
@@ -24,6 +25,8 @@ class Order(models.Model):
     is_complete = models.BooleanField(default=False)
     order_name = models.ForeignKey("OrderName", on_delete=models.PROTECT, null=True)
     is_in_progress = models.BooleanField(default=False)
+
+    objects = OrderManager()
 
     def __str__(self):
         return f"Order {self.id} - {self.date}"
@@ -86,18 +89,22 @@ class MenuItemCustomOrder(models.Model):
         cup_prices = list()
         for cup in Cup.objects.all():
             cup_price = cup.price
-            price = self.menu_item_custom_order_custom_order_flavors.annotate(
-                quantity_price=(
-                    F("custom_order_flavor__quantity")
-                    * F("custom_order_flavor__flavor__flavor_group__price")
-                )
-            ).aggregate(total_sum_product=Sum("quantity_price"))
+            if hasattr(self.menu_item, "price"):
+                price = self.menu_item.price.price * cup.conversion_factor
+            else:
+                price = self.menu_item_custom_order_custom_order_flavors.annotate(
+                    quantity_price=(
+                        F("custom_order_flavor__quantity")
+                        * F("custom_order_flavor__flavor__flavor_group__price")
+                    )
+                ).aggregate(total_sum_product=Sum("quantity_price"))
+                price = price.get("total_sum_product", 0)
             cup_prices.append(
                 {
                     "id": cup.id,
                     "size": cup.size,
                     "size__display": cup.get_size_display(),
-                    "price": cup_price + price.get("total_sum_product", 0),
+                    "price": cup_price + price,
                 }
             )
         return cup_prices

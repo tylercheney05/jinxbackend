@@ -29,6 +29,7 @@ class OrderViewSet(
     mixins.ListModelMixin,
     mixins.RetrieveModelMixin,
     mixins.DestroyModelMixin,
+    mixins.UpdateModelMixin,
 ):
     http_method_names = ["get", "patch", "delete"]
     queryset = Order.objects.all()
@@ -68,6 +69,13 @@ class OrderViewSet(
         obj.is_complete = is_complete
         obj.save()
         return Response(self.get_serializer(obj).data)
+
+    @action(detail=False, methods=["get"], url_path="pending")
+    def pending_orders(self, request, *args, **kwargs):
+        location_id = int(request.query_params.get("location_id", "0"))
+        queryset = Order.objects.pending_orders(location_id)
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
 
 
 class OrderItemViewSet(

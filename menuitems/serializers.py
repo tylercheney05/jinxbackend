@@ -5,7 +5,15 @@ from menuitems.models import (
     LimitedTimePromotion,
     MenuItem,
     MenuItemFlavor,
+    MenuItemPrice,
 )
+
+
+class MenuItemPriceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MenuItemPrice
+        fields = ["id", "price"]
+        read_only_fields = ["id"]
 
 
 class MenuItemFlavorSerializer(serializers.ModelSerializer):
@@ -39,6 +47,7 @@ class MenuItemSerializer(serializers.ModelSerializer):
     limited_time_promo = serializers.IntegerField(
         write_only=True, required=False, allow_null=True
     )
+    price = MenuItemPriceSerializer(required=False, allow_null=True)
 
     class Meta:
         model = MenuItem
@@ -51,12 +60,15 @@ class MenuItemSerializer(serializers.ModelSerializer):
             "menu_item_flavors",
             "cup_prices",
             "limited_time_promo",
+            "price",
         ]
         read_only_fields = ["id"]
 
     def create(self, validated_data):
         flavors = validated_data.pop("menu_item_flavors")
         limited_time_promo = validated_data.pop("limited_time_promo", None)
+        price = validated_data.pop("price", None)
+
         menu_item = MenuItem.objects.create(**validated_data)
         for flavor in flavors:
             MenuItemFlavor.objects.create(
@@ -68,6 +80,10 @@ class MenuItemSerializer(serializers.ModelSerializer):
             LimitedTimeMenuItem.objects.create(
                 menu_item=menu_item, limited_time_promo_id=limited_time_promo
             )
+        if price:
+            price_serializer = MenuItemPriceSerializer(data=price)
+            price_serializer.is_valid(raise_exception=True)
+            price_serializer.save(menu_item=menu_item)
         return menu_item
 
 

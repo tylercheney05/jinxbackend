@@ -18,16 +18,20 @@ class MenuItem(models.Model):
         cup_prices = list()
         for cup in Cup.objects.all():
             cup_price = cup.price
-            price = self.flavors.annotate(
-                quantity_price=(F("quantity") * cup.conversion_factor)
-                * F("flavor__flavor_group__price")
-            ).aggregate(total_sum_product=Sum("quantity_price"))
+            if hasattr(self, "price"):
+                price = self.price.price * cup.conversion_factor
+            else:
+                price = self.flavors.annotate(
+                    quantity_price=(F("quantity") * cup.conversion_factor)
+                    * F("flavor__flavor_group__price")
+                ).aggregate(total_sum_product=Sum("quantity_price"))
+                price = price.get("total_sum_product", 0)
             cup_prices.append(
                 {
                     "id": cup.id,
                     "size": cup.size,
                     "size__display": cup.get_size_display(),
-                    "price": cup_price + price.get("total_sum_product", 0),
+                    "price": cup_price + price,
                 }
             )
         return cup_prices
@@ -35,7 +39,7 @@ class MenuItem(models.Model):
 
 class MenuItemFlavor(models.Model):
     menu_item = models.ForeignKey(
-        "MenuItem", on_delete=models.CASCADE, related_name="flavors"
+        MenuItem, on_delete=models.CASCADE, related_name="flavors"
     )
     flavor = models.ForeignKey(
         "flavors.Flavor", on_delete=models.CASCADE, related_name="menu_item_flavors"
@@ -72,3 +76,22 @@ class LimitedTimeMenuItem(models.Model):
 
     def __str__(self):
         return f"{self.menu_item.name} {self.limited_time_promo.name}"
+
+
+class MenuItemPrice(models.Model):
+    """
+    This model is used to store the price of a menu item
+    not including the price of the cup.
+    """
+
+    menu_item = models.OneToOneField(
+        MenuItem, on_delete=models.CASCADE, related_name="price"
+    )
+    price = models.DecimalField(
+        max_digits=5,
+        decimal_places=2,
+        help_text="Price of the menu_item of a 16 oz drink, not including the price of the cup",
+    )
+
+    def __str__(self):
+        return f"{self.menu_item.name} {self.price}"
