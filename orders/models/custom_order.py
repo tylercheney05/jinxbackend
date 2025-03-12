@@ -55,18 +55,22 @@ class MenuItemCustomOrder(models.Model):
         cup_model = apps.get_model("cups", "Cup")
         for cup in cup_model.objects.all():
             cup_price = cup.price
-            price = self.menu_item_custom_order_custom_order_flavors.annotate(
-                quantity_price=(
-                    F("custom_order_flavor__quantity")
-                    * F("custom_order_flavor__flavor__flavor_group__price")
-                )
-            ).aggregate(total_sum_product=Sum("quantity_price"))
+            if hasattr(self.menu_item, "price"):
+                price = self.menu_item.price.price * cup.conversion_factor
+            else:
+                price = self.menu_item_custom_order_custom_order_flavors.annotate(
+                    quantity_price=(
+                        F("custom_order_flavor__quantity")
+                        * F("custom_order_flavor__flavor__flavor_group__price")
+                    )
+                ).aggregate(total_sum_product=Sum("quantity_price"))
+                price = price.get("total_sum_product", 0)
             cup_prices.append(
                 {
                     "id": cup.id,
                     "size": cup.size,
                     "size__display": cup.get_size_display(),
-                    "price": cup_price + price.get("total_sum_product", 0),
+                    "price": cup_price + price,
                 }
             )
         return cup_prices

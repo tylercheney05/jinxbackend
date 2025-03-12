@@ -1,4 +1,4 @@
-from rest_framework import mixins, viewsets
+from rest_framework import filters, mixins, viewsets
 
 from core.mixins import AutocompleteViewSetMixin
 from core.permissions import IsSystemAdminUserOrIsStaffUserReadOnly
@@ -17,3 +17,8 @@ class SodaViewSet(
     permission_classes = [IsSystemAdminUserOrIsStaffUserReadOnly]
     serializer_class = SodaSerializer
     autocomplete_fields = ["id", "name"]
+    filter_backends = [
+        filters.OrderingFilter,
+    ]
+    ordering_fields = ["name"]
+    ordering = ["name"]

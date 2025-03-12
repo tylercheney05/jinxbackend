@@ -1,6 +1,6 @@
 from django.db import transaction
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import mixins, viewsets
+from rest_framework import filters, mixins, viewsets
 
 from core.mixins import AutocompleteViewSetMixin
 from core.permissions import IsSystemAdminUserOrIsStaffUserReadOnly
@@ -24,8 +24,10 @@ class MenuItemViewSet(
     model = MenuItem
     queryset = model.objects.all()
     permission_classes = [IsSystemAdminUserOrIsStaffUserReadOnly]
-    filter_backends = [DjangoFilterBackend]
+    filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
     filterset_class = MenuItemFilter
+    ordering_fields = ["name"]
+    ordering = ["name"]
 
     def get_serializer_class(self):
         if self.action == "retrieve":

@@ -8,6 +8,7 @@ from menuitems.serializers.menu_item_flavor import (
     MenuItemFlavorSerializer,
     MenuItemFlavorSummarySerializer,
 )
+from menuitems.serializers.menu_item_price import MenuItemPriceSerializer
 from sodas.serializers import SodaSerializer
 
 
@@ -27,6 +28,7 @@ class MenuItemSerializer(serializers.ModelSerializer):
         required=False,
         allow_null=True,
     )
+    price = MenuItemPriceSerializer(required=False, allow_null=True)
 
     class Meta:
         model = MenuItem
@@ -36,6 +38,7 @@ class MenuItemSerializer(serializers.ModelSerializer):
             "soda",
             "menu_item_flavors",
             "limited_time_promo",
+            "price",
         ]
         read_only_fields = ["id"]
 
@@ -47,6 +50,7 @@ class MenuItemSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         flavors = validated_data.pop("menu_item_flavors")
         limited_time_promo = validated_data.pop("limited_time_promo", None)
+        price = validated_data.pop("price", None)
 
         # Create menu item
         menu_item = MenuItem.objects.create(**validated_data)
@@ -75,6 +79,10 @@ class MenuItemSerializer(serializers.ModelSerializer):
                 limited_time_menu_item.save()
             else:
                 raise serializers.ValidationError(limited_time_menu_item.errors)
+        if price:
+            price_serializer = MenuItemPriceSerializer(data=price)
+            price_serializer.is_valid(raise_exception=True)
+            price_serializer.save(menu_item=menu_item)
         return menu_item
 
 

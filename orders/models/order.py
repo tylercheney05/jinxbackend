@@ -5,6 +5,7 @@ from django.db import models
 from django.utils import timezone
 
 from orders.constants import ORDER_ITEMS_ATTRS
+from orders.managers import OrderManager
 
 
 class Order(models.Model):
@@ -24,6 +25,8 @@ class Order(models.Model):
     is_complete = models.BooleanField(default=False)
     order_name = models.ForeignKey("OrderName", on_delete=models.PROTECT, null=True)
     is_in_progress = models.BooleanField(default=False)
+
+    objects = OrderManager()
 
     def __str__(self):
         return f"Order {self.id} - {self.date}"
