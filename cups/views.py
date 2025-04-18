@@ -17,8 +17,9 @@ class CupViewSet(
     mixins.CreateModelMixin,
     mixins.ListModelMixin,
     mixins.RetrieveModelMixin,
+    mixins.UpdateModelMixin,
 ):
-    http_method_names = ["get", "post"]
+    http_method_names = ["get", "post", "put"]
     queryset = Cup.objects.all()
     serializer_class = CupSerializer
     permission_classes = [IsSystemAdminUserOrIsStaffUserReadOnly]

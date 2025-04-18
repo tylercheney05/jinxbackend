@@ -8,7 +8,8 @@ class FlavorGroupSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = FlavorGroup
-        fields = ["name", "uom", "uom__display", "price"]
+        fields = ["id", "name", "uom", "uom__display", "price"]
+        read_only_fields = ["id", "uom__display"]
 
     def get_uom__display(self, obj):
         return obj.get_uom_display()

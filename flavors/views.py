@@ -11,8 +11,9 @@ class FlavorGroupViewSet(
     viewsets.GenericViewSet,
     mixins.CreateModelMixin,
     mixins.ListModelMixin,
+    mixins.UpdateModelMixin,
 ):
-    http_method_names = ["post", "get"]
+    http_method_names = ["post", "get", "put"]
     queryset = FlavorGroup.objects.all()
     permission_classes = [IsSystemAdminUser]
     serializer_class = FlavorGroupSerializer
