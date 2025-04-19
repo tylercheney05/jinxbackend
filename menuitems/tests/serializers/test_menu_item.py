@@ -8,11 +8,13 @@ from menuitems.models import (
     LimitedTimePromotion,
     MenuItem,
     MenuItemFlavor,
+    MenuItemPrice,
 )
 from menuitems.serializers.menu_item import (
     AddMenuItemFlavorSerializer,
     MenuItemSerializer,
 )
+from menuitems.serializers.menu_item_price import MenuItemPriceSerializer
 from sodas.models import Soda
 
 
@@ -60,6 +62,19 @@ class TestMenuItemSerializer(TestCase):
         self.assertTrue(serializer.fields["limited_time_promo"].write_only)
         self.assertFalse(serializer.fields["limited_time_promo"].required)
         self.assertTrue(serializer.fields["limited_time_promo"].allow_null)
+
+    def test_price(self):
+        serializer = MenuItemSerializer()
+        self.assertIsInstance(
+            serializer.fields["price"],
+            serializers.Serializer,
+        )
+        self.assertIsInstance(
+            serializer.fields["price"],
+            MenuItemPriceSerializer,
+        )
+        self.assertFalse(serializer.fields["price"].required)
+        self.assertTrue(serializer.fields["price"].allow_null)
 
     def test_model(self):
         serializer = MenuItemSerializer()
@@ -176,3 +191,28 @@ class TestMenuItemSerializerCreate(TestCase):
         self.assertEqual(
             limited_time_menu_item.limited_time_promo.id, self.limited_time_promo.id
         )
+
+    def test_price_not_created(self):
+        serializer = MenuItemSerializer(data=self.default_data)
+        self.assertTrue(serializer.is_valid())
+
+        serializer.save()
+        self.assertEqual(MenuItem.objects.count(), 1)
+        self.assertEqual(MenuItemFlavor.objects.count(), 3)
+        self.assertEqual(MenuItemPrice.objects.count(), 0)
+
+    def test_price_created(self):
+        data = self.default_data.copy()
+        data["price"] = {"price": 5}
+
+        serializer = MenuItemSerializer(data=data)
+        self.assertTrue(serializer.is_valid())
+
+        serializer.save()
+        self.assertEqual(MenuItem.objects.count(), 1)
+        self.assertEqual(MenuItemFlavor.objects.count(), 3)
+        self.assertEqual(MenuItemPrice.objects.count(), 1)
+
+        price = MenuItemPrice.objects.first()
+        self.assertEqual(price.menu_item.id, MenuItem.objects.first().id)
+        self.assertEqual(price.price, 5)

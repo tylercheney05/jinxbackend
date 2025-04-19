@@ -5,7 +5,7 @@ from django.test import TestCase
 from model_bakery import baker
 
 from cups.models import Cup
-from menuitems.models import MenuItem
+from menuitems.models import MenuItem, MenuItemPrice
 
 
 class TestMenuItem(TestCase):
@@ -29,8 +29,10 @@ class TestMenuItem(TestCase):
         menu_item = baker.make(MenuItem)
         self.assertEqual(str(menu_item), menu_item.name)
 
+
+class TestCupPrices(TestCase):
     @patch("menuitems.models.MenuItemFlavorManager.sum_price")
-    def test_cup_prices(self, mock_sum_price):
+    def test_if_no_manual_price(self, mock_sum_price):
         mock_sum_price.return_value = {"total_sum_product": 10}
 
         cup1 = baker.make(Cup)
@@ -56,6 +58,37 @@ class TestMenuItem(TestCase):
                         "display": cup2.get_size_display(),
                     },
                     "price": cup2.price + 10,
+                },
+            ],
+        )
+
+    def test_if_manual_price(self):
+        cup1 = baker.make(Cup)
+        cup2 = baker.make(Cup)
+
+        menu_item = baker.make(MenuItem)
+        menu_item_price = baker.make(MenuItemPrice, menu_item=menu_item)
+
+        self.assertEqual(
+            menu_item.cup_prices,
+            [
+                {
+                    "id": cup1.id,
+                    "size": {
+                        "value": cup1.size,
+                        "display": cup1.get_size_display(),
+                    },
+                    "price": cup1.price
+                    + menu_item_price.price * cup1.conversion_factor,
+                },
+                {
+                    "id": cup2.id,
+                    "size": {
+                        "value": cup2.size,
+                        "display": cup2.get_size_display(),
+                    },
+                    "price": cup2.price
+                    + menu_item_price.price * cup2.conversion_factor,
                 },
             ],
         )

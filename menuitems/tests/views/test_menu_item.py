@@ -53,6 +53,14 @@ class TestMenuItemViewSet(TestCase):
         view = MenuItemViewSet()
         self.assertEqual(view.filterset_class, MenuItemFilter)
 
+    def test_ordering_fields(self):
+        view = MenuItemViewSet()
+        self.assertEqual(view.ordering_fields, ["name"])
+
+    def test_ordering(self):
+        view = MenuItemViewSet()
+        self.assertEqual(view.ordering, ["name"])
+
 
 class TestGetSerializerClass(TestCase):
     def test_get_serializer_class_retrieve(self):
