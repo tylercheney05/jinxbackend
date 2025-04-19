@@ -14,7 +14,7 @@ def get_uom(obj):
 class FlavorGroupSerializer(serializers.ModelSerializer):
     class Meta:
         model = FlavorGroup
-        fields = ["name", "uom", "price"]
+        fields = ["id", "name", "uom", "price"]
 
 
 class FlavorGroupSummarySerializer(ReadOnlyModelSerializer):

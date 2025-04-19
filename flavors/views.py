@@ -17,10 +17,11 @@ class FlavorGroupViewSet(
     viewsets.GenericViewSet,
     mixins.CreateModelMixin,
     mixins.ListModelMixin,
+    mixins.UpdateModelMixin,
 ):
     model = FlavorGroup
     queryset = model.objects.all()
-    http_method_names = ["post", "get"]
+    http_method_names = ["post", "get", "put"]
     permission_classes = [IsSystemAdminUser]
     autocomplete_fields = ["id", "name"]
 

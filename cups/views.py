@@ -17,10 +17,11 @@ class CupViewSet(
     mixins.CreateModelMixin,
     mixins.ListModelMixin,
     mixins.RetrieveModelMixin,
+    mixins.UpdateModelMixin,
 ):
     model = Cup
     queryset = model.objects.all()
-    http_method_names = ["get", "post"]
+    http_method_names = ["get", "post", "put"]
     permission_classes = [IsSystemAdminUserOrIsStaffUserReadOnly]
 
     def get_serializer_class(self):

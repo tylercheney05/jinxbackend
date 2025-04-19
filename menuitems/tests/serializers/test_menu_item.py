@@ -69,7 +69,7 @@ class TestMenuItemSerializer(TestCase):
         serializer = MenuItemSerializer()
         self.assertEqual(
             serializer.Meta.fields,
-            ["id", "name", "soda", "menu_item_flavors", "limited_time_promo"],
+            ["id", "name", "soda", "menu_item_flavors", "limited_time_promo", "price"],
         )
         self.assertEqual(serializer.Meta.read_only_fields, ["id"])
 

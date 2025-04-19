@@ -32,7 +32,7 @@ class TestFlavorGroupSerializer(TestCase):
 
     def test_fields(self):
         serializer = FlavorGroupSerializer()
-        self.assertEqual(serializer.Meta.fields, ["name", "uom", "price"])
+        self.assertEqual(serializer.Meta.fields, ["id", "name", "uom", "price"])
 
 
 class TestFlavorGroupSummarySerializer(TestCase):

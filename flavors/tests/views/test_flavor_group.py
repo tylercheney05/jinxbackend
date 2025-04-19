@@ -15,10 +15,11 @@ class TestFlavorGroupViewSet(TestCase):
         self.assertTrue(issubclass(view.__class__, mixins.CreateModelMixin))
         self.assertTrue(issubclass(view.__class__, mixins.ListModelMixin))
         self.assertTrue(issubclass(view.__class__, AutocompleteViewSetMixin))
+        self.assertTrue(issubclass(view.__class__, mixins.UpdateModelMixin))
 
     def test_http_method_names(self):
         view = FlavorGroupViewSet()
-        self.assertEqual(view.http_method_names, ["post", "get"])
+        self.assertEqual(view.http_method_names, ["post", "get", "put"])
 
     def test_model(self):
         view = FlavorGroupViewSet()

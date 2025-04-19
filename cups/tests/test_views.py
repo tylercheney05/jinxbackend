@@ -14,7 +14,7 @@ from cups.views import CupViewSet
 class TestCupViewSetBase(TestCase):
     def test_http_method_names(self):
         view = CupViewSet()
-        self.assertEqual(view.http_method_names, ["get", "post"])
+        self.assertEqual(view.http_method_names, ["get", "post", "put"])
 
     def test_model(self):
         view = CupViewSet()
@@ -39,6 +39,7 @@ class TestCupViewSetBase(TestCase):
         self.assertTrue(issubclass(view.__class__, mixins.ListModelMixin))
         self.assertTrue(issubclass(view.__class__, mixins.RetrieveModelMixin))
         self.assertTrue(issubclass(view.__class__, AutocompleteViewSetMixin))
+        self.assertTrue(issubclass(view.__class__, mixins.UpdateModelMixin))
 
 
 class TestCupViewSetGetSerializerClass(TestCase):

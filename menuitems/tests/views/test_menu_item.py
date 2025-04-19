@@ -3,7 +3,7 @@ from unittest.mock import MagicMock, patch
 from django.test import TestCase
 from django_filters.rest_framework import DjangoFilterBackend
 from model_bakery import baker
-from rest_framework import mixins, viewsets
+from rest_framework import filters, mixins, viewsets
 
 from core.permissions import IsSystemAdminUserOrIsStaffUserReadOnly
 from flavors.models import Flavor
@@ -45,7 +45,9 @@ class TestMenuItemViewSet(TestCase):
 
     def test_filter_backends(self):
         view = MenuItemViewSet()
-        self.assertEqual(view.filter_backends, [DjangoFilterBackend])
+        self.assertEqual(
+            view.filter_backends, [DjangoFilterBackend, filters.OrderingFilter]
+        )
 
     def test_filterset_class(self):
         view = MenuItemViewSet()
