@@ -23,7 +23,7 @@ class Order(models.Model):
         related_name="orders",
     )
     is_complete = models.BooleanField(default=False)
-    order_name = models.ForeignKey("OrderName", on_delete=models.PROTECT, null=True)
+    order_name = models.ForeignKey("OrderName", on_delete=models.SET_NULL, null=True)
     is_in_progress = models.BooleanField(default=False)
 
     objects = OrderManager()
@@ -215,7 +215,7 @@ class CustomOrderFlavorMenuItemCustomOrder(models.Model):
 
 
 class OrderName(models.Model):
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=50, unique=True)
 
     def __str__(self):
         return self.name
