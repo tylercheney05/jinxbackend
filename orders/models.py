@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from django.conf import settings
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
@@ -6,6 +8,7 @@ from django.utils import timezone
 
 from cups.models import Cup
 from orders.managers import OrderManager
+from sodas.constants import WATER_BEVERAGE
 
 
 class Order(models.Model):
@@ -89,6 +92,14 @@ class MenuItemCustomOrder(models.Model):
         cup_prices = list()
         for cup in Cup.objects.all():
             cup_price = cup.price
+
+            ## TODO: REMOVE LATER
+            if self.soda.name == WATER_BEVERAGE:
+                if cup.size == "16":
+                    cup_price = Decimal(2.25)
+                else:
+                    cup_price = Decimal(2.5)
+
             if hasattr(self.menu_item, "price"):
                 price = self.menu_item.price.price * cup.conversion_factor
             else:
@@ -153,6 +164,14 @@ class CustomOrder(models.Model):
         cup_prices = list()
         for cup in Cup.objects.all():
             cup_price = cup.price
+
+            ## TODO: REMOVE LATER
+            if self.soda.name == WATER_BEVERAGE:
+                if cup.size == "16":
+                    cup_price = Decimal(2.25)
+                else:
+                    cup_price = Decimal(2.5)
+
             price = self.custom_order_custom_order_flavors.annotate(
                 quantity_price=(
                     F("custom_order_flavor__quantity")
