@@ -1,10 +1,7 @@
-from decimal import Decimal
-
 from django.db import models
 
 from cups.models import Cup
 from menuitems.managers import MenuItemFlavorManager
-from sodas.constants import WATER_BEVERAGE
 
 
 class MenuItem(models.Model):
@@ -21,14 +18,6 @@ class MenuItem(models.Model):
         cup_prices = list()
         for cup in Cup.objects.all():
             cup_price = cup.price
-
-            ## TODO: REMOVE LATER
-            if self.soda.name == WATER_BEVERAGE:
-                if cup.size == "16":
-                    cup_price = Decimal(2.25)
-                else:
-                    cup_price = Decimal(2.5)
-
             if hasattr(self, "price"):
                 price = self.price.price * cup.conversion_factor
             else:
