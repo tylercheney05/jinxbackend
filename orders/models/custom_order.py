@@ -1,6 +1,10 @@
+from decimal import Decimal
+
 from django.apps import apps
 from django.db import models
 from django.db.models import F, Sum
+
+from sodas.constants import WATER_BEVERAGE
 
 
 class CustomOrder(models.Model):
@@ -17,6 +21,14 @@ class CustomOrder(models.Model):
         cup_model = apps.get_model("cups", "Cup")
         for cup in cup_model.objects.all():
             cup_price = cup.price
+
+            ## TODO: REMOVE LATER
+            if self.soda.name == WATER_BEVERAGE:
+                if cup.size == "16":
+                    cup_price = Decimal(2.25)
+                else:
+                    cup_price = Decimal(2.5)
+
             price = self.custom_order_custom_order_flavors.annotate(
                 quantity_price=(
                     F("custom_order_flavor__quantity")
@@ -55,6 +67,14 @@ class MenuItemCustomOrder(models.Model):
         cup_model = apps.get_model("cups", "Cup")
         for cup in cup_model.objects.all():
             cup_price = cup.price
+
+            ## TODO: REMOVE LATER
+            if self.soda.name == WATER_BEVERAGE:
+                if cup.size == "16":
+                    cup_price = Decimal(2.25)
+                else:
+                    cup_price = Decimal(2.5)
+
             if hasattr(self.menu_item, "price"):
                 price = self.menu_item.price.price * cup.conversion_factor
             else:

@@ -6,6 +6,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from core.mixins import AutocompleteViewSetMixin
+from core.permissions import IsSystemAdminUserOrIsStaffUserReadOnly
 from orders.models import Discount, Order, OrderName, OrderPaidAmount
 from orders.serializers import (
     DiscountSerializer,
@@ -70,10 +71,12 @@ class OrderNameViewSet(
     viewsets.GenericViewSet,
     mixins.CreateModelMixin,
     mixins.ListModelMixin,
+    mixins.UpdateModelMixin,
+    mixins.DestroyModelMixin,
 ):
-    http_method_names = ["post", "get"]
+    http_method_names = ["post", "get", "put", "delete"]
     queryset = OrderName.objects.all()
-    permission_classes = [permissions.IsAdminUser]
+    permission_classes = [IsSystemAdminUserOrIsStaffUserReadOnly]
     serializer_class = OrderNameSerializer
     autocomplete_fields = ["id", "name"]
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
@@ -89,7 +92,7 @@ class DiscountViewSet(
 ):
     http_method_names = ["post", "get"]
     queryset = Discount.objects.all()
-    permission_classes = [permissions.IsAdminUser]
+    permission_classes = [IsSystemAdminUserOrIsStaffUserReadOnly]
     serializer_class = DiscountSerializer
     autocomplete_fields = ["id", "name"]
 
