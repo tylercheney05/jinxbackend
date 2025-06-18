@@ -8,7 +8,7 @@ from rest_framework.response import Response
 from core.mixins import AutocompleteViewSetMixin
 from core.permissions import IsSystemAdminUserOrIsStaffUserReadOnly
 from cups.models import Cup
-from cups.serializers import CupSerializer
+from cups.serializers import CupSerializer, CupSerializerReadOnly
 
 
 class CupViewSet(
@@ -21,8 +21,12 @@ class CupViewSet(
 ):
     http_method_names = ["get", "post", "put"]
     queryset = Cup.objects.all()
-    serializer_class = CupSerializer
     permission_classes = [IsSystemAdminUserOrIsStaffUserReadOnly]
+
+    def get_serializer_class(self):
+        if self.action in ["list", "retrieve", "autocomplete"]:
+            return CupSerializerReadOnly
+        return CupSerializer
 
     @action(detail=False, methods=["get"], url_path="autocomplete")
     def autocomplete(self, request, *args, **kwargs):

@@ -1,15 +1,21 @@
 from rest_framework import serializers
 
+from core.serializers import ReadOnlyModelSerializer
 from cups.models import Cup
 
 
 class CupSerializer(serializers.ModelSerializer):
-    size__display = serializers.SerializerMethodField(read_only=True)
+    class Meta:
+        model = Cup
+        fields = ["id", "size", "price", "conversion_factor"]
+
+
+class CupSerializerReadOnly(ReadOnlyModelSerializer):
+    size = serializers.SerializerMethodField()
 
     class Meta:
         model = Cup
-        fields = ["id", "size", "size__display", "price", "conversion_factor"]
-        read_only_fields = ["id"]
+        fields = ["id", "size", "price", "conversion_factor"]
 
-    def get_size__display(self, obj):
-        return obj.get_size_display()
+    def get_size(self, obj: Cup):
+        return {"value": obj.size, "display": obj.get_size_display()}
