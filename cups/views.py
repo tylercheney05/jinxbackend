@@ -5,8 +5,8 @@ from rest_framework import mixins, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
+from core.mixins import AutocompleteViewSetMixin
 from core.permissions import IsSystemAdminUserOrIsStaffUserReadOnly
-from core.viewsets import AutocompleteViewSetMixin
 from cups.models import Cup
 from cups.serializers import CupSerializer
 

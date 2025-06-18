@@ -1,7 +1,7 @@
 from rest_framework import filters, mixins, viewsets
 
+from core.mixins import AutocompleteViewSetMixin
 from core.permissions import IsSystemAdminUserOrIsStaffUserReadOnly
-from core.viewsets import AutocompleteViewSetMixin
 from sodas.models import Soda
 from sodas.serializers import SodaSerializer
 
