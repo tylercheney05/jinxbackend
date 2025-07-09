@@ -58,6 +58,7 @@ INSTALLED_APPS = [
     "users",
     "sodas",
     "flavors",
+    "menus",
     "menuitems",
     "cups",
     "orders",
