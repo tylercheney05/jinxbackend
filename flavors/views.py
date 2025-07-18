@@ -3,7 +3,11 @@ from rest_framework import filters, mixins, viewsets
 from core.mixins import AutocompleteViewSetMixin
 from core.permissions import IsSystemAdminUser
 from flavors.models import Flavor, FlavorGroup
-from flavors.serializers import FlavorGroupSerializer, FlavorSerializer
+from flavors.serializers.flavor import FlavorSerializer, FlavorSerializerReadOnly
+from flavors.serializers.flavor_group import (
+    FlavorGroupSerializer,
+    FlavorGroupSerializerReadOnly,
+)
 
 
 class FlavorGroupViewSet(
@@ -18,6 +22,11 @@ class FlavorGroupViewSet(
     permission_classes = [IsSystemAdminUser]
     serializer_class = FlavorGroupSerializer
     autocomplete_fields = ["id", "name"]
+
+    def get_serializer_class(self):
+        if self.action in ["create", "update"]:
+            return FlavorGroupSerializer
+        return FlavorGroupSerializerReadOnly
 
 
 class FlavorViewSet(
@@ -35,3 +44,8 @@ class FlavorViewSet(
     filter_backends = [filters.OrderingFilter]
     ordering_fields = ["flavor_group__name", "name"]
     ordering = ["flavor_group__name", "name"]
+
+    def get_serializer_class(self):
+        if self.action in ["create"]:
+            return FlavorSerializer
+        return FlavorSerializerReadOnly

@@ -3,7 +3,9 @@ from django.db import models
 
 class Flavor(models.Model):
     name = models.CharField(max_length=200)
-    flavor_group = models.ForeignKey("FlavorGroup", on_delete=models.CASCADE)
+    flavor_group = models.ForeignKey(
+        "FlavorGroup", on_delete=models.CASCADE, related_name="flavors"
+    )
     sugar_free_available = models.BooleanField(default=False)
 
     def __str__(self):
