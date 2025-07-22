@@ -2,8 +2,8 @@ from django.db import models
 
 
 class Menu(models.Model):
-    version = models.PositiveSmallIntegerField()
-    date = models.DateField()
+    version = models.PositiveSmallIntegerField(unique=True)
+    date = models.DateField(unique=True)
 
     class Meta:
         verbose_name = "Menu"

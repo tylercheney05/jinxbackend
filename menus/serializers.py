@@ -11,4 +11,3 @@ class MenuSerializer(serializers.ModelSerializer):
             "version",
             "date",
         ]
-        read_only_fields = ["id"]
