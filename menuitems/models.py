@@ -4,6 +4,7 @@ from django.db import models
 from django.db.models import F, Sum
 
 from cups.models import Cup
+from menuitems.managers import MenuItemFlavorManager
 from sodas.constants import WATER_BEVERAGE
 
 
@@ -56,6 +57,8 @@ class MenuItemFlavor(models.Model):
         "flavors.Flavor", on_delete=models.CASCADE, related_name="menu_item_flavors"
     )
     quantity = models.PositiveIntegerField()
+
+    objects = MenuItemFlavorManager()
 
     def __str__(self):
         return f"{self.menu_item.name} {self.flavor.name} {self.quantity}"
