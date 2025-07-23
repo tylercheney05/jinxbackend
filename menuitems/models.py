@@ -1,10 +1,10 @@
 from decimal import Decimal
 
 from django.db import models
-from django.db.models import F, Sum
 
 from cups.models import Cup
 from menuitems.managers import MenuItemFlavorManager
+from menuitems.utils import get_flavors_price
 from sodas.constants import WATER_BEVERAGE
 
 
@@ -30,19 +30,14 @@ class MenuItem(models.Model):
                 else:
                     cup_price = Decimal(2.5)
 
-            if hasattr(self, "price"):
-                price = self.price.price * cup.conversion_factor
-            else:
-                price = self.flavors.annotate(
-                    quantity_price=(F("quantity") * cup.conversion_factor)
-                    * F("flavor__flavor_group__price")
-                ).aggregate(total_sum_product=Sum("quantity_price"))
-                price = price.get("total_sum_product", 0)
+            price = get_flavors_price(self, cup)
             cup_prices.append(
                 {
                     "id": cup.id,
-                    "size": cup.size,
-                    "size__display": cup.get_size_display(),
+                    "size": {
+                        "value": cup.size,
+                        "display": cup.get_size_display(),
+                    },
                     "price": cup_price + price,
                 }
             )
@@ -62,14 +57,6 @@ class MenuItemFlavor(models.Model):
 
     def __str__(self):
         return f"{self.menu_item.name} {self.flavor.name} {self.quantity}"
-
-    @property
-    def cup_quantities(self):
-        cup_quantities = dict()
-        for cup in Cup.objects.all():
-            quantity = self.quantity * cup.conversion_factor
-            cup_quantities[cup.id] = quantity
-        return cup_quantities
 
 
 class LimitedTimePromotion(models.Model):
