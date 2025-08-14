@@ -1,3 +1,4 @@
+from django.db import transaction
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, mixins, viewsets
 
@@ -5,7 +6,11 @@ from core.mixins import AutocompleteViewSetMixin
 from core.permissions import IsSystemAdminUserOrIsStaffUserReadOnly
 from menuitems.filters import MenuItemFilter
 from menuitems.models import LimitedTimePromotion, MenuItem
-from menuitems.serializers import LimitedTimePromotionSerializer, MenuItemSerializer
+from menuitems.serializers.limited_time_promotion import LimitedTimePromotionSerializer
+from menuitems.serializers.menu_item import (
+    MenuItemSerializer,
+    MenuItemSerializerReadOnly,
+)
 
 
 class MenuItemViewSet(
@@ -17,11 +22,19 @@ class MenuItemViewSet(
     http_method_names = ["post", "get"]
     queryset = MenuItem.objects.all()
     permission_classes = [IsSystemAdminUserOrIsStaffUserReadOnly]
-    serializer_class = MenuItemSerializer
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
     filterset_class = MenuItemFilter
     ordering_fields = ["name"]
     ordering = ["name"]
+
+    def get_serializer_class(self):
+        if self.action in ["list", "retrieve"]:
+            return MenuItemSerializerReadOnly
+        return MenuItemSerializer
+
+    @transaction.atomic
+    def create(self, request, *args, **kwargs):
+        return super().create(request, *args, **kwargs)
 
 
 class LimitedTimePromotionViewSet(

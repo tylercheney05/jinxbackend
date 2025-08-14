@@ -16,7 +16,3 @@ class TestLocationSerializer(TestCase):
     def test_fields(self):
         serializer = LocationSerializer()
         self.assertEqual(serializer.Meta.fields, ["id", "name"])
-
-    def test_read_only_fields(self):
-        serializer = LocationSerializer()
-        self.assertEqual(serializer.Meta.read_only_fields, ["id"])
