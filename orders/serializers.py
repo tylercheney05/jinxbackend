@@ -1,6 +1,7 @@
 from django.db import transaction
 from rest_framework import serializers
 
+from cups.models import Cup
 from locations.models import Location
 from menuitems.models import MenuItem, MenuItemFlavor
 from orders.models import (
@@ -81,7 +82,7 @@ class OrderItemSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ["id"]
 
-    def get_price(self, obj):
+    def get_price(self, obj: OrderItem):
         if self.context:
             discount_id = int(self.context["request"].query_params.get("discount", "0"))
             discount = Discount.objects.get(id=discount_id) if discount_id else None
@@ -107,7 +108,12 @@ class OrderItemSerializer(serializers.ModelSerializer):
 
             found_object = None
             for item in cup_prices:
-                if item["size"] == obj.cup.size:
+                cup: Cup = obj.cup
+                try:
+                    item_size = item["size"]["value"]
+                except:
+                    item_size = item["size"]
+                if item_size == cup.size:
                     found_object = item
                     break
 
