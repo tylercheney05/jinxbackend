@@ -6,7 +6,8 @@ from django.test import TestCase
 from model_bakery import baker
 
 from cups.models import Cup
-from menuitems.models import MenuItem, MenuItemPrice
+from menuitems.models import MenuItem
+from sodas.constants import WATER_16OZ_PRICE, WATER_32OZ_PRICE
 
 
 class TestMenuItem(TestCase):
@@ -29,14 +30,19 @@ class TestMenuItem(TestCase):
         self.assertEqual(field.remote_field.on_delete, models.CASCADE)
         self.assertEqual(field.remote_field.related_name, "menu_items")
 
+    def test_is_archived(self):
+        field = MenuItem._meta.get_field("is_archived")
+        self.assertIsInstance(field, models.BooleanField)
+        self.assertFalse(field.default)
+
 
 class TestMenuItemCupPrices(TestCase):
     @patch("menuitems.models.get_flavors_price")
     def test_if_water(self, mock_get_flavors_price):
         mock_get_flavors_price.return_value = 10
 
-        cup1 = baker.make(Cup, size="16", price=Decimal("2.25"))
-        cup2 = baker.make(Cup, size="32", price=Decimal("2.5"))
+        cup1 = baker.make(Cup, size="16", price=Decimal(WATER_16OZ_PRICE))
+        cup2 = baker.make(Cup, size="32", price=Decimal(WATER_32OZ_PRICE))
         menu_item = baker.make(MenuItem, soda__name="Water (Flat/Sparkling)")
 
         self.assertEqual(
@@ -48,7 +54,7 @@ class TestMenuItemCupPrices(TestCase):
                         "value": cup1.size,
                         "display": cup1.get_size_display(),
                     },
-                    "price": Decimal("2.25") + 10,
+                    "price": Decimal(WATER_16OZ_PRICE) + 10,
                 },
                 {
                     "id": cup2.id,
@@ -56,7 +62,7 @@ class TestMenuItemCupPrices(TestCase):
                         "value": cup2.size,
                         "display": cup2.get_size_display(),
                     },
-                    "price": Decimal("2.5") + 10,
+                    "price": Decimal(WATER_32OZ_PRICE) + 10,
                 },
             ],
         )
@@ -65,8 +71,8 @@ class TestMenuItemCupPrices(TestCase):
     def test_if_not_water(self, mock_get_flavors_price):
         mock_get_flavors_price.return_value = 10
 
-        cup1 = baker.make(Cup, size="16", price=Decimal("2.25"))
-        cup2 = baker.make(Cup, size="32", price=Decimal("2.5"))
+        cup1 = baker.make(Cup, size="16", price=Decimal(WATER_16OZ_PRICE))
+        cup2 = baker.make(Cup, size="32", price=Decimal(WATER_32OZ_PRICE))
         menu_item = baker.make(MenuItem, soda__name="Cola")
 
         self.assertEqual(

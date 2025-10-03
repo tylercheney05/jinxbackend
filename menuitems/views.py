@@ -18,8 +18,9 @@ class MenuItemViewSet(
     mixins.CreateModelMixin,
     mixins.ListModelMixin,
     mixins.RetrieveModelMixin,
+    mixins.UpdateModelMixin,
 ):
-    http_method_names = ["post", "get"]
+    http_method_names = ["post", "get", "patch"]
     queryset = MenuItem.objects.all()
     permission_classes = [IsSystemAdminUserOrIsStaffUserReadOnly]
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
@@ -35,6 +36,10 @@ class MenuItemViewSet(
     @transaction.atomic
     def create(self, request, *args, **kwargs):
         return super().create(request, *args, **kwargs)
+
+    @transaction.atomic
+    def partial_update(self, request, *args, **kwargs):
+        return super().partial_update(request, *args, **kwargs)
 
 
 class LimitedTimePromotionViewSet(

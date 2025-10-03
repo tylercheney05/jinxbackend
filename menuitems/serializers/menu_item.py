@@ -20,7 +20,18 @@ class MenuItemSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = MenuItem
-        fields = ["id", "name", "soda", "flavors", "limited_time_menu_item", "price"]
+        fields = [
+            "id",
+            "name",
+            "soda",
+            "is_archived",
+            "flavors",
+            "limited_time_menu_item",
+            "price",
+        ]
+        extra_kwargs = {
+            "is_archived": {"required": False},
+        }
 
     def validate_flavors(self, value):
         if not value or len(value) == 0:
@@ -71,6 +82,7 @@ class MenuItemSerializerReadOnly(ReadOnlyModelSerializer):
             "id",
             "name",
             "soda",
+            "is_archived",
             "flavors",
             "cup_prices",
         ]

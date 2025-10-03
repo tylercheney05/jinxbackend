@@ -12,6 +12,7 @@ class MenuItemFilter(django_filters.FilterSet):
         model = MenuItem
         fields = [
             "soda",
+            "is_archived",
             "limited_time_promotions__limited_time_promo",
             "limited_time_promotions__isnull",
             "limited_time_promotions__limited_time_promo__is_archived",

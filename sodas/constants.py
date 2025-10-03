@@ -1,1 +1,3 @@
 WATER_BEVERAGE = "Water (Flat/Sparkling)"
+WATER_16OZ_PRICE = 2.75
+WATER_32OZ_PRICE = 3

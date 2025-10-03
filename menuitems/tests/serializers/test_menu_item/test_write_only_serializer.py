@@ -28,11 +28,21 @@ class TestMenuItemSerializer(TestCase):
             "id",
             "name",
             "soda",
+            "is_archived",
             "flavors",
             "limited_time_menu_item",
             "price",
         ]
         self.assertEqual(serializer.Meta.fields, expected_fields)
+
+    def test_extra_kwargs(self):
+        serializer = MenuItemSerializer()
+        self.assertEqual(
+            serializer.Meta.extra_kwargs,
+            {
+                "is_archived": {"required": False},
+            },
+        )
 
     def test_flavors(self):
         serializer = MenuItemSerializer()

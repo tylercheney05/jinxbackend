@@ -8,7 +8,7 @@ from django.utils import timezone
 
 from cups.models import Cup
 from orders.managers import OrderManager
-from sodas.constants import WATER_BEVERAGE
+from sodas.constants import WATER_16OZ_PRICE, WATER_32OZ_PRICE, WATER_BEVERAGE
 
 
 class Order(models.Model):
@@ -96,9 +96,9 @@ class MenuItemCustomOrder(models.Model):
             ## TODO: REMOVE LATER
             if self.soda.name == WATER_BEVERAGE:
                 if cup.size == "16":
-                    cup_price = Decimal(2.25)
+                    cup_price = Decimal(WATER_16OZ_PRICE)
                 else:
-                    cup_price = Decimal(2.5)
+                    cup_price = Decimal(WATER_32OZ_PRICE)
 
             if hasattr(self.menu_item, "price"):
                 price = self.menu_item.price.price * cup.conversion_factor

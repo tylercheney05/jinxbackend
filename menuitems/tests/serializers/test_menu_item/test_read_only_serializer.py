@@ -19,7 +19,7 @@ class TestMenuItemSerializerReadOnly(TestCase):
 
     def test_fields(self):
         serializer = MenuItemSerializerReadOnly()
-        expected_fields = ["id", "name", "soda", "flavors", "cup_prices"]
+        expected_fields = ["id", "name", "soda", "is_archived", "flavors", "cup_prices"]
         self.assertEqual(serializer.Meta.fields, expected_fields)
 
     def test_soda(self):

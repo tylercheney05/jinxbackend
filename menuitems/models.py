@@ -5,7 +5,7 @@ from django.db import models
 from cups.models import Cup
 from menuitems.managers import MenuItemFlavorManager
 from menuitems.utils import get_flavors_price
-from sodas.constants import WATER_BEVERAGE
+from sodas.constants import WATER_16OZ_PRICE, WATER_32OZ_PRICE, WATER_BEVERAGE
 
 
 class MenuItem(models.Model):
@@ -13,6 +13,7 @@ class MenuItem(models.Model):
     soda = models.ForeignKey(
         "sodas.Soda", on_delete=models.CASCADE, related_name="menu_items"
     )
+    is_archived = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name
@@ -26,9 +27,9 @@ class MenuItem(models.Model):
             ## TODO: REMOVE LATER
             if self.soda.name == WATER_BEVERAGE:
                 if cup.size == "16":
-                    cup_price = Decimal(2.25)
+                    cup_price = Decimal(WATER_16OZ_PRICE)
                 else:
-                    cup_price = Decimal(2.5)
+                    cup_price = Decimal(WATER_32OZ_PRICE)
 
             price = get_flavors_price(self, cup)
             cup_prices.append(
