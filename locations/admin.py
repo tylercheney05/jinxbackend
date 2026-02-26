@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from locations.models import DeviceToken, Location
+from locations.models import Device, Location
 
 admin.site.register(Location)
-admin.site.register(DeviceToken)
+admin.site.register(Device)

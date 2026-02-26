@@ -4,7 +4,7 @@ from rest_framework.response import Response
 
 from core.mixins import AutocompleteViewSetMixin
 from core.permissions import IsSystemAdminUserOrIsStaffUserReadOnly
-from locations.models import DeviceToken, Location
+from locations.models import Device, Location
 from locations.serializers import DeviceAuthResponseSerializer, LocationSerializer
 
 
@@ -33,10 +33,10 @@ class DeviceAuthView(views.APIView):
             )
 
         try:
-            device = DeviceToken.objects.select_related("location").get(
+            device = Device.objects.select_related("location").get(
                 token=token, is_active=True
             )
-        except DeviceToken.DoesNotExist:
+        except Device.DoesNotExist:
             return Response(
                 {"error": "Invalid or inactive device token"},
                 status=status.HTTP_401_UNAUTHORIZED,

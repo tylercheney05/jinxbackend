@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from locations.models import DeviceToken, Location
+from locations.models import Device, Location
 
 
 class LocationSerializer(serializers.ModelSerializer):
@@ -17,7 +17,7 @@ class DeviceAuthResponseSerializer(serializers.ModelSerializer):
     location_name = serializers.CharField(source="location.name")
 
     class Meta:
-        model = DeviceToken
+        model = Device
         fields = [
             "token",
             "name",

@@ -5,7 +5,7 @@ from channels.db import database_sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
 from django.db.models import BooleanField, Case, F, IntegerField, Value, When
 
-from locations.models import DeviceToken
+from locations.models import Device
 from orders.models import Order
 from orders.serializers import OrderSerializer
 from users.models import User
@@ -46,7 +46,7 @@ class OrderConsumer(AsyncWebsocketConsumer):
 
     @database_sync_to_async
     def validate_device_token(self, token):
-        return DeviceToken.objects.filter(
+        return Device.objects.filter(
             token=token, location_id=self.location_id, is_active=True
         ).exists()
 
