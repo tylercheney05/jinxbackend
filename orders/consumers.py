@@ -5,6 +5,7 @@ from channels.db import database_sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
 from django.db.models import BooleanField, Case, F, IntegerField, Value, When
 
+from locations.models import DeviceToken
 from orders.models import Order
 from orders.serializers import OrderSerializer
 from users.models import User
@@ -14,10 +15,24 @@ class OrderConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         self.location_id = self.scope["url_route"]["kwargs"]["location_id"]
         self.room_group_name = f"chat_{self.location_id}"
-        self.user = await self.get_user()
 
-        # user permissions
-        if not (self.user.is_staff or self.user.is_admin):
+        query_params = parse_qs(self.scope["query_string"].decode("utf-8"))
+
+        # Support both device token auth (kitchen app) and user auth (main app)
+        device_token = query_params.get("device_token", [None])[0]
+        user_id = query_params.get("user_id", [None])[0]
+
+        if device_token:
+            is_valid = await self.validate_device_token(device_token)
+            if not is_valid:
+                await self.close(code=4002)
+                return
+        elif user_id:
+            self.user = await self.get_user(user_id)
+            if not (self.user.is_staff or self.user.is_admin):
+                await self.close(code=4002)
+                return
+        else:
             await self.close(code=4002)
             return
 
@@ -30,10 +45,14 @@ class OrderConsumer(AsyncWebsocketConsumer):
         await self.send(text_data=json.dumps({"pending_orders": pending_orders}))
 
     @database_sync_to_async
-    def get_user(self):
-        return User.objects.get(
-            id=parse_qs(self.scope["query_string"].decode("utf-8")).get("user_id")[0]
-        )
+    def validate_device_token(self, token):
+        return DeviceToken.objects.filter(
+            token=token, location_id=self.location_id, is_active=True
+        ).exists()
+
+    @database_sync_to_async
+    def get_user(self, user_id):
+        return User.objects.get(id=user_id)
 
     async def disconnect(self, close_code):
         # Leave room group
