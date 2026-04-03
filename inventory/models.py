@@ -25,6 +25,42 @@ class InventoryItem(models.Model):
     order_cost = models.DecimalField(max_digits=10, decimal_places=2)
     order_count = models.PositiveIntegerField()
 
+    @property
+    def reorder_status(self):
+        if self.reorder_point == 0:
+            return "do_not_order"
+        if self.on_hand_qty > self.reorder_point:
+            return "ok"
+        if self.on_hand_qty + self.in_transit_qty <= self.reorder_point:
+            return "reorder"
+        if self.in_transit_qty > 0:
+            return "ordered"
+        return None
+
+    @property
+    def in_transit_qty(self):
+        return (
+            self.inventorylog_set.filter(received_date__isnull=True).aggregate(
+                total=models.Sum("quantity")
+            )["total"]
+            or 0
+        )
+
+    @property
+    def on_hand_qty(self):
+        return (
+            self.inventorylog_set.filter(received_date__isnull=False).aggregate(
+                total=models.Sum("quantity")
+            )["total"]
+            or 0
+        )
+
+    @property
+    def min_order_qty(self):
+        if self.reorder_point == 0:
+            return 0
+        return max(0, self.reorder_point - self.on_hand_qty - self.in_transit_qty)
+
 
 class InventoryLog(models.Model):
     inventory_item = models.ForeignKey(InventoryItem, on_delete=models.CASCADE)

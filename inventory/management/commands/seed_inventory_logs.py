@@ -26,8 +26,8 @@ class Command(BaseCommand):
         skipped_rows = 0
 
         for row in ws.iter_rows(min_row=2, values_only=True):
-            received_date = row[0]
-            purchase_date = row[1]
+            purchase_date = row[0]
+            received_date = row[1]
             sku = row[2]
             quantity = row[5]
             note = row[6]

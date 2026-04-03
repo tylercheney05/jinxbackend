@@ -28,6 +28,11 @@ class InventoryItemSerializer(serializers.ModelSerializer):
             "reorder_point",
             "order_cost",
             "order_count",
+            # Model properties
+            "on_hand_qty",
+            "in_transit_qty",
+            "min_order_qty",
+            "reorder_status",
         ]
         read_only_fields = ["id"]
 
