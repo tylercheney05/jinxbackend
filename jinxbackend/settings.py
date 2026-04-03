@@ -63,6 +63,7 @@ INSTALLED_APPS = [
     "cups",
     "orders",
     "locations",
+    "inventory",
 ]
 
 MIDDLEWARE = [
