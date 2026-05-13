@@ -1,0 +1,37 @@
+[
+    {
+        "model": "sodas.soda",
+        "pk": 1,
+        "fields": {
+            "name": "Coke"
+        }
+    },
+    {
+        "model": "sodas.soda",
+        "pk": 2,
+        "fields": {
+            "name": "Dr. Pepper"
+        }
+    },
+    {
+        "model": "sodas.soda",
+        "pk": 3,
+        "fields": {
+            "name": "Mtn. Dew"
+        }
+    },
+    {
+        "model": "sodas.soda",
+        "pk": 4,
+        "fields": {
+            "name": "Sprite"
+        }
+    },
+    {
+        "model": "sodas.soda",
+        "pk": 5,
+        "fields": {
+            "name": "Water (Flat/Sparkling)"
+        }
+    }
+]

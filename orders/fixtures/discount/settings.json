@@ -1,0 +1,42 @@
+[
+    {
+        "model": "orders.discount",
+        "pk": 1,
+        "fields": {
+            "name": "Free",
+            "code": "FREE"
+        }
+    },
+    {
+        "model": "orders.discount",
+        "pk": 2,
+        "fields": {
+            "name": "Lime Boi's AM Perk",
+            "code": "AMPERK202409"
+        }
+    },
+    {
+        "model": "orders.DiscountPercentOff",
+        "pk": 1,
+        "fields": {
+            "discount": 1,
+            "percent_off": 1
+        }
+    },
+    {
+        "model": "orders.DiscountPrice",
+        "pk": 1,
+        "fields": {
+            "discount": 2,
+            "price": 4
+        }
+    },
+    {
+        "model": "orders.DiscountCupSize",
+        "pk": 1,
+        "fields": {
+            "discount": 2,
+            "cup": 1
+        }
+    }
+]

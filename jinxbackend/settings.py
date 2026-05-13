@@ -29,8 +29,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = str(os.environ.get("SECRET_KEY"))
 
+NODE_ENV = os.environ.get("NODE_ENV", "development")
+
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True if os.environ["NODE_ENV"] == "development" else False
+DEBUG = True if NODE_ENV == "development" else False
 
 HOST = str(os.environ.get("HOST"))
 REDIS_PORT = int(os.environ.get("REDIS_PORT"))

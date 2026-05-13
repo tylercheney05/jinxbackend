@@ -1,0 +1,272 @@
+[
+    {
+        "model": "flavors.flavor",
+        "pk": 1,
+        "fields": {
+            "name": "Coconut Cream",
+            "flavor_group": 4,
+            "sugar_free_available": false
+        }
+    },
+    {
+        "model": "flavors.flavor",
+        "pk": 2,
+        "fields": {
+            "name": "Vanilla Cream",
+            "flavor_group": 4,
+            "sugar_free_available": false
+        }
+    },
+    {
+        "model": "flavors.flavor",
+        "pk": 3,
+        "fields": {
+            "name": "Fresh Lime",
+            "flavor_group": 3,
+            "sugar_free_available": false
+        }
+    },
+    {
+        "model": "flavors.flavor",
+        "pk": 4,
+        "fields": {
+            "name": "Half & Half",
+            "flavor_group": 5,
+            "sugar_free_available": false
+        }
+    },
+    {
+        "model": "flavors.flavor",
+        "pk": 5,
+        "fields": {
+            "name": "Mango Puree",
+            "flavor_group": 2,
+            "sugar_free_available": false
+        }
+    },
+    {
+        "model": "flavors.flavor",
+        "pk": 6,
+        "fields": {
+            "name": "Raspberry Puree",
+            "flavor_group": 2,
+            "sugar_free_available": false
+        }
+    },
+    {
+        "model": "flavors.flavor",
+        "pk": 7,
+        "fields": {
+            "name": "Cinnamon",
+            "flavor_group": 6,
+            "sugar_free_available": false
+        }
+    },
+    {
+        "model": "flavors.flavor",
+        "pk": 8,
+        "fields": {
+            "name": "Apple",
+            "flavor_group": 1,
+            "sugar_free_available": false
+        }
+    },
+    {
+        "model": "flavors.flavor",
+        "pk": 9,
+        "fields": {
+            "name": "Blackberry",
+            "flavor_group": 1,
+            "sugar_free_available": false
+        }
+    },
+    {
+        "model": "flavors.flavor",
+        "pk": 10,
+        "fields": {
+            "name": "Brown Sugar Cinnamon",
+            "flavor_group": 1,
+            "sugar_free_available": false
+        }
+    },
+    {
+        "model": "flavors.flavor",
+        "pk": 11,
+        "fields": {
+            "name": "Cherry",
+            "flavor_group": 1,
+            "sugar_free_available": true
+        }
+    },
+    {
+        "model": "flavors.flavor",
+        "pk": 12,
+        "fields": {
+            "name": "Coconut",
+            "flavor_group": 1,
+            "sugar_free_available": true
+        }
+    },
+    {
+        "model": "flavors.flavor",
+        "pk": 13,
+        "fields": {
+            "name": "Cranberry",
+            "flavor_group": 1,
+            "sugar_free_available": false
+        }
+    },
+    {
+        "model": "flavors.flavor",
+        "pk": 14,
+        "fields": {
+            "name": "Dragon Fruit",
+            "flavor_group": 1,
+            "sugar_free_available": false
+        }
+    },
+    {
+        "model": "flavors.flavor",
+        "pk": 15,
+        "fields": {
+            "name": "Elderflower",
+            "flavor_group": 1,
+            "sugar_free_available": false
+        }
+    },
+    {
+        "model": "flavors.flavor",
+        "pk": 16,
+        "fields": {
+            "name": "Grenadine",
+            "flavor_group": 1,
+            "sugar_free_available": false
+        }
+    },
+    {
+        "model": "flavors.flavor",
+        "pk": 17,
+        "fields": {
+            "name": "Guava",
+            "flavor_group": 1,
+            "sugar_free_available": false
+        }
+    },
+    {
+        "model": "flavors.flavor",
+        "pk": 18,
+        "fields": {
+            "name": "Hibiscus",
+            "flavor_group": 1,
+            "sugar_free_available": false
+        }
+    },
+    {
+        "model": "flavors.flavor",
+        "pk": 19,
+        "fields": {
+            "name": "Lavender",
+            "flavor_group": 1,
+            "sugar_free_available": true
+        }
+    },
+    {
+        "model": "flavors.flavor",
+        "pk": 20,
+        "fields": {
+            "name": "Mango",
+            "flavor_group": 1,
+            "sugar_free_available": true
+        }
+    },
+    {
+        "model": "flavors.flavor",
+        "pk": 21,
+        "fields": {
+            "name": "Peach",
+            "flavor_group": 1,
+            "sugar_free_available": true
+        }
+    },
+    {
+        "model": "flavors.flavor",
+        "pk": 22,
+        "fields": {
+            "name": "Pineapple",
+            "flavor_group": 1,
+            "sugar_free_available": true
+        }
+    },
+    {
+        "model": "flavors.flavor",
+        "pk": 23,
+        "fields": {
+            "name": "Pomegranate",
+            "flavor_group": 1,
+            "sugar_free_available": false
+        }
+    },
+    {
+        "model": "flavors.flavor",
+        "pk": 24,
+        "fields": {
+            "name": "Prickly Pear",
+            "flavor_group": 1,
+            "sugar_free_available": false
+        }
+    },
+    {
+        "model": "flavors.flavor",
+        "pk": 25,
+        "fields": {
+            "name": "Pumpkin Spice",
+            "flavor_group": 1,
+            "sugar_free_available": false
+        }
+    },
+    {
+        "model": "flavors.flavor",
+        "pk": 26,
+        "fields": {
+            "name": "Raspberry",
+            "flavor_group": 1,
+            "sugar_free_available": true
+        }
+    },
+    {
+        "model": "flavors.flavor",
+        "pk": 27,
+        "fields": {
+            "name": "Strawberry",
+            "flavor_group": 1,
+            "sugar_free_available": true
+        }
+    },
+    {
+        "model": "flavors.flavor",
+        "pk": 28,
+        "fields": {
+            "name": "Rose",
+            "flavor_group": 1,
+            "sugar_free_available": false
+        }
+    },
+    {
+        "model": "flavors.flavor",
+        "pk": 29,
+        "fields": {
+            "name": "Strawberry",
+            "flavor_group": 1,
+            "sugar_free_available": true
+        }
+    },
+    {
+        "model": "flavors.flavor",
+        "pk": 30,
+        "fields": {
+            "name": "Vanilla",
+            "flavor_group": 1,
+            "sugar_free_available": true
+        }
+    }
+]

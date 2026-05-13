@@ -1,0 +1,56 @@
+[
+    {
+        "model": "flavors.flavorgroup",
+        "pk": 1,
+        "fields": {
+            "name": "Syrup",
+            "uom": "pump",
+            "price": "0.15"
+        }
+    },
+    {
+        "model": "flavors.flavorgroup",
+        "pk": 2,
+        "fields": {
+            "name": "Puree",
+            "uom": "pump",
+            "price": "0.30"
+        }
+    },
+    {
+        "model": "flavors.flavorgroup",
+        "pk": 3,
+        "fields": {
+            "name": "Fruit",
+            "uom": "wedge",
+            "price": "0.30"
+        }
+    },
+    {
+        "model": "flavors.flavorgroup",
+        "pk": 4,
+        "fields": {
+            "name": "Cream",
+            "uom": "pump",
+            "price": "0.15"
+        }
+    },
+    {
+        "model": "flavors.flavorgroup",
+        "pk": 5,
+        "fields": {
+            "name": "Half & Half",
+            "uom": "single",
+            "price": "0.30"
+        }
+    },
+    {
+        "model": "flavors.flavorgroup",
+        "pk": 6,
+        "fields": {
+            "name": "Spice",
+            "uom": "pinch",
+            "price": "0.00"
+        }
+    }
+]

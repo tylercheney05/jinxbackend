@@ -1,0 +1,29 @@
+[
+    {
+        "model": "cups.cup",
+        "pk": 1,
+        "fields": {
+            "size": "16",
+            "price": "3.75",
+            "conversion_factor": "1.00"
+        }
+    },
+    {
+        "model": "cups.cup",
+        "pk": 2,
+        "fields": {
+            "size": "32",
+            "price": "5.00",
+            "conversion_factor": "2.00"
+        }
+    },
+    {
+        "model": "cups.cup",
+        "pk": 3,
+        "fields": {
+            "size": "24",
+            "price": "4.25",
+            "conversion_factor": "1.50"
+        }
+    }
+]
