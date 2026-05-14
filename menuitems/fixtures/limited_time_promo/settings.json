@@ -1,0 +1,10 @@
+[
+    {
+        "model": "menuitems.limitedtimepromotion",
+        "pk": 1,
+        "fields": {
+            "name": "CASA",
+            "is_archived": false
+        }
+    }
+]

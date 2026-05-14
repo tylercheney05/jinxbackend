@@ -2,7 +2,7 @@
 	{"model": "menuitems.menuitem", "pk": 1, "fields": {"name": "Coco Butter Kisses", "soda": 1, "is_archived": false}},
 	{"model": "menuitems.menuitem", "pk": 2, "fields": {"name": "Got So Much Soul", "soda": 1, "is_archived": false}},
 	{"model": "menuitems.menuitem", "pk": 3, "fields": {"name": "Hey Ma", "soda": 1, "is_archived": false}},
-	{"model": "menuitems.menuitem", "pk": 4, "fields": {"name": "That's Frio", "soda": 1, "is_archived": false}},
+	{"model": "menuitems.menuitem", "pk": 4, "fields": {"name": "Now or Never", "soda": 1, "is_archived": false}},
 
 	{"model": "menuitems.menuitemflavor", "pk": 1, "fields": {"menu_item": 1, "flavor": 30, "quantity": 2}},
 	{"model": "menuitems.menuitemflavor", "pk": 2, "fields": {"menu_item": 1, "flavor": 4, "quantity": 1}},
@@ -16,8 +16,10 @@
 	{"model": "menuitems.menuitemflavor", "pk": 8, "fields": {"menu_item": 3, "flavor": 18, "quantity": 2}},
 	{"model": "menuitems.menuitemflavor", "pk": 9, "fields": {"menu_item": 3, "flavor": 12, "quantity": 2}},
 
-	{"model": "menuitems.menuitemflavor", "pk": 10, "fields": {"menu_item": 4, "flavor": 13, "quantity": 2}},
-	{"model": "menuitems.menuitemflavor", "pk": 11, "fields": {"menu_item": 4, "flavor": 3, "quantity": 1}}
+	{"model": "menuitems.menuitemflavor", "pk": 10, "fields": {"menu_item": 4, "flavor": 19, "quantity": 2}},
+	{"model": "menuitems.menuitemflavor", "pk": 11, "fields": {"menu_item": 4, "flavor": 9, "quantity": 2}},
+	{"model": "menuitems.menuitemflavor", "pk": 63, "fields": {"menu_item": 4, "flavor": 31, "quantity": 2}},
+	{"model": "menuitems.menuitemflavor", "pk": 64, "fields": {"menu_item": 4, "flavor": 3, "quantity": 1}}
 
 	,
 	{"model": "menuitems.menuitem", "pk": 5, "fields": {"name": "Dilemma", "soda": 2, "is_archived": false}},
@@ -28,6 +30,7 @@
 	{"model": "menuitems.menuitemflavor", "pk": 12, "fields": {"menu_item": 5, "flavor": 27, "quantity": 2}},
 	{"model": "menuitems.menuitemflavor", "pk": 13, "fields": {"menu_item": 5, "flavor": 9, "quantity": 2}},
 	{"model": "menuitems.menuitemflavor", "pk": 14, "fields": {"menu_item": 5, "flavor": 30, "quantity": 2}},
+	{"model": "menuitems.menuitemflavor", "pk": 65, "fields": {"menu_item": 5, "flavor": 4, "quantity": 1}},
 
 	{"model": "menuitems.menuitemflavor", "pk": 15, "fields": {"menu_item": 6, "flavor": 30, "quantity": 2}},
 	{"model": "menuitems.menuitemflavor", "pk": 16, "fields": {"menu_item": 6, "flavor": 1, "quantity": 2}},
@@ -38,16 +41,17 @@
 
 	{"model": "menuitems.menuitemflavor", "pk": 20, "fields": {"menu_item": 8, "flavor": 21, "quantity": 2}},
 	{"model": "menuitems.menuitemflavor", "pk": 21, "fields": {"menu_item": 8, "flavor": 30, "quantity": 2}},
-	{"model": "menuitems.menuitemflavor", "pk": 22, "fields": {"menu_item": 8, "flavor": 27, "quantity": 2}}
+	{"model": "menuitems.menuitemflavor", "pk": 22, "fields": {"menu_item": 8, "flavor": 31, "quantity": 2}}
 	,
-	{"model": "menuitems.menuitem", "pk": 9, "fields": {"name": "Could You Be Loved", "soda": 3, "is_archived": false}},
+	{"model": "menuitems.menuitem", "pk": 9, "fields": {"name": "Juicy", "soda": 3, "is_archived": false}},
 	{"model": "menuitems.menuitem", "pk": 10, "fields": {"name": "Go Crazy", "soda": 3, "is_archived": false}},
 	{"model": "menuitems.menuitem", "pk": 11, "fields": {"name": "Livin' On An Island", "soda": 3, "is_archived": false}},
 	{"model": "menuitems.menuitem", "pk": 12, "fields": {"name": "Them Summer Nights", "soda": 3, "is_archived": false}},
 
-	{"model": "menuitems.menuitemflavor", "pk": 23, "fields": {"menu_item": 9, "flavor": 15, "quantity": 2}},
-	{"model": "menuitems.menuitemflavor", "pk": 24, "fields": {"menu_item": 9, "flavor": 5, "quantity": 2}},
-	{"model": "menuitems.menuitemflavor", "pk": 25, "fields": {"menu_item": 9, "flavor": 12, "quantity": 2}},
+	{"model": "menuitems.menuitemflavor", "pk": 23, "fields": {"menu_item": 9, "flavor": 14, "quantity": 2}},
+	{"model": "menuitems.menuitemflavor", "pk": 24, "fields": {"menu_item": 9, "flavor": 22, "quantity": 2}},
+	{"model": "menuitems.menuitemflavor", "pk": 25, "fields": {"menu_item": 9, "flavor": 20, "quantity": 2}},
+	{"model": "menuitems.menuitemflavor", "pk": 66, "fields": {"menu_item": 9, "flavor": 2, "quantity": 2}},
 
 	{"model": "menuitems.menuitemflavor", "pk": 26, "fields": {"menu_item": 10, "flavor": 22, "quantity": 4}},
 	{"model": "menuitems.menuitemflavor", "pk": 27, "fields": {"menu_item": 10, "flavor": 6, "quantity": 2}},
@@ -60,16 +64,17 @@
 	{"model": "menuitems.menuitemflavor", "pk": 32, "fields": {"menu_item": 12, "flavor": 5, "quantity": 2}},
 	{"model": "menuitems.menuitemflavor", "pk": 33, "fields": {"menu_item": 12, "flavor": 27, "quantity": 4}},
 
-	{"model": "menuitems.menuitemprice", "pk": 5, "fields": {"menu_item": 10, "price": "1.25"}},
+	{"model": "menuitems.menuitemprice", "pk": 5, "fields": {"menu_item": 10, "price": "1.50"}},
 
-	{"model": "menuitems.menuitem", "pk": 13, "fields": {"name": "Let Me Love You", "soda": 4, "is_archived": false}},
+	{"model": "menuitems.menuitem", "pk": 13, "fields": {"name": "Redbone", "soda": 4, "is_archived": false}},
 	{"model": "menuitems.menuitem", "pk": 14, "fields": {"name": "Ride That Wave", "soda": 4, "is_archived": false}},
 	{"model": "menuitems.menuitem", "pk": 15, "fields": {"name": "Still In My Vans", "soda": 4, "is_archived": false}},
 	{"model": "menuitems.menuitem", "pk": 16, "fields": {"name": "Suga Suga", "soda": 4, "is_archived": false}},
 
-	{"model": "menuitems.menuitemflavor", "pk": 34, "fields": {"menu_item": 13, "flavor": 28, "quantity": 2}},
-	{"model": "menuitems.menuitemflavor", "pk": 35, "fields": {"menu_item": 13, "flavor": 19, "quantity": 2}},
-	{"model": "menuitems.menuitemflavor", "pk": 36, "fields": {"menu_item": 13, "flavor": 4, "quantity": 1}},
+	{"model": "menuitems.menuitemflavor", "pk": 34, "fields": {"menu_item": 13, "flavor": 32, "quantity": 2}},
+	{"model": "menuitems.menuitemflavor", "pk": 35, "fields": {"menu_item": 13, "flavor": 20, "quantity": 2}},
+	{"model": "menuitems.menuitemflavor", "pk": 36, "fields": {"menu_item": 13, "flavor": 22, "quantity": 2}},
+	{"model": "menuitems.menuitemflavor", "pk": 70, "fields": {"menu_item": 13, "flavor": 2, "quantity": 2}},
 
 	{"model": "menuitems.menuitemflavor", "pk": 37, "fields": {"menu_item": 14, "flavor": 12, "quantity": 2}},
 	{"model": "menuitems.menuitemflavor", "pk": 38, "fields": {"menu_item": 14, "flavor": 17, "quantity": 4}},
@@ -83,9 +88,15 @@
 	{"model": "menuitems.menuitemflavor", "pk": 44, "fields": {"menu_item": 16, "flavor": 26, "quantity": 2}},
 	{"model": "menuitems.menuitemflavor", "pk": 45, "fields": {"menu_item": 16, "flavor": 27, "quantity": 2}},
 
+	{"model": "menuitems.menuitem", "pk": 21, "fields": {"name": "I'll Be There", "soda": 4, "is_archived": false}},
+
+	{"model": "menuitems.menuitemflavor", "pk": 67, "fields": {"menu_item": 21, "flavor": 14, "quantity": 2}},
+	{"model": "menuitems.menuitemflavor", "pk": 68, "fields": {"menu_item": 21, "flavor": 31, "quantity": 2}},
+	{"model": "menuitems.menuitemflavor", "pk": 69, "fields": {"menu_item": 21, "flavor": 22, "quantity": 2}},
+
 	{"model": "menuitems.menuitem", "pk": 17, "fields": {"name": "Crazy In Love", "soda": 5, "is_archived": false}},
 	{"model": "menuitems.menuitem", "pk": 18, "fields": {"name": "I Got A Feeling", "soda": 5, "is_archived": false}},
-	{"model": "menuitems.menuitem", "pk": 19, "fields": {"name": "I'm Sprung", "soda": 5, "is_archived": false}},
+	{"model": "menuitems.menuitem", "pk": 19, "fields": {"name": "Rock With You", "soda": 5, "is_archived": false}},
 	{"model": "menuitems.menuitem", "pk": 20, "fields": {"name": "Mrs. Officer", "soda": 5, "is_archived": false}},
 
 	{"model": "menuitems.menuitemflavor", "pk": 46, "fields": {"menu_item": 17, "flavor": 19, "quantity": 4}},
@@ -98,10 +109,11 @@
 	{"model": "menuitems.menuitemflavor", "pk": 52, "fields": {"menu_item": 18, "flavor": 22, "quantity": 2}},
 	{"model": "menuitems.menuitemflavor", "pk": 53, "fields": {"menu_item": 18, "flavor": 5, "quantity": 2}},
 
-	{"model": "menuitems.menuitemflavor", "pk": 54, "fields": {"menu_item": 19, "flavor": 12, "quantity": 2}},
-	{"model": "menuitems.menuitemflavor", "pk": 55, "fields": {"menu_item": 19, "flavor": 20, "quantity": 2}},
-	{"model": "menuitems.menuitemflavor", "pk": 56, "fields": {"menu_item": 19, "flavor": 24, "quantity": 2}},
-	{"model": "menuitems.menuitemflavor", "pk": 57, "fields": {"menu_item": 19, "flavor": 5, "quantity": 2}},
+	{"model": "menuitems.menuitemflavor", "pk": 54, "fields": {"menu_item": 19, "flavor": 31, "quantity": 2}},
+	{"model": "menuitems.menuitemflavor", "pk": 55, "fields": {"menu_item": 19, "flavor": 27, "quantity": 2}},
+	{"model": "menuitems.menuitemflavor", "pk": 56, "fields": {"menu_item": 19, "flavor": 11, "quantity": 2}},
+	{"model": "menuitems.menuitemflavor", "pk": 57, "fields": {"menu_item": 19, "flavor": 12, "quantity": 2}},
+	{"model": "menuitems.menuitemflavor", "pk": 71, "fields": {"menu_item": 19, "flavor": 3, "quantity": 1}},
 
 	{"model": "menuitems.menuitemflavor", "pk": 58, "fields": {"menu_item": 20, "flavor": 9, "quantity": 2}},
 	{"model": "menuitems.menuitemflavor", "pk": 59, "fields": {"menu_item": 20, "flavor": 26, "quantity": 2}},

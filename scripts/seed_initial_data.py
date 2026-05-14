@@ -23,3 +23,5 @@ def run(*args):
     call_command("loaddata", "orders/fixtures/order_name/settings.json")
     call_command("loaddata", "orders/fixtures/discount/settings.json")
     call_command("loaddata", "menuitems/fixtures/menu_item/settings.json")
+    call_command("loaddata", "menuitems/fixtures/limited_time_promo/settings.json")
+    call_command("loaddata", "menuitems/fixtures/limited_time_menu_item/settings.json")

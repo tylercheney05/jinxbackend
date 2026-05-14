@@ -268,5 +268,23 @@
             "flavor_group": 1,
             "sugar_free_available": true
         }
+    },
+    {
+        "model": "flavors.flavor",
+        "pk": 31,
+        "fields": {
+            "name": "Strawberry Puree",
+            "flavor_group": 2,
+            "sugar_free_available": false
+        }
+    },
+    {
+        "model": "flavors.flavor",
+        "pk": 32,
+        "fields": {
+            "name": "Blue Raspberry",
+            "flavor_group": 1,
+            "sugar_free_available": true
+        }
     }
 ]

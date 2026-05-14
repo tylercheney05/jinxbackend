@@ -32,7 +32,7 @@
         "fields": {
             "name": "Cream",
             "uom": "pump",
-            "price": "0.15"
+            "price": "0.30"
         }
     },
     {
@@ -41,7 +41,7 @@
         "fields": {
             "name": "Half & Half",
             "uom": "single",
-            "price": "0.30"
+            "price": "0.60"
         }
     },
     {

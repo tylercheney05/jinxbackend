@@ -1,0 +1,10 @@
+[
+    {
+        "model": "menuitems.limitedtimemenuitem",
+        "pk": 1,
+        "fields": {
+            "menu_item": 21,
+            "limited_time_promo": 1 
+        }
+    }
+]
