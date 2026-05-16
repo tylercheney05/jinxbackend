@@ -24,6 +24,7 @@ class InventoryItem(models.Model):
     reorder_point = models.PositiveIntegerField()
     order_cost = models.DecimalField(max_digits=10, decimal_places=2)
     order_count = models.PositiveIntegerField()
+    is_active = models.BooleanField(default=True)
 
     @property
     def reorder_status(self):

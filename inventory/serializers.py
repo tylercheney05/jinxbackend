@@ -27,6 +27,7 @@ class InventoryItemSerializer(serializers.ModelSerializer):
             "reorder_point",
             "order_cost",
             "order_count",
+            "is_active",
         ]
         read_only_fields = ["id"]
 
@@ -46,6 +47,7 @@ class InventoryItemSerializerReadOnly(ReadOnlyModelSerializer):
             "reorder_point",
             "order_cost",
             "order_count",
+            "is_active",
             "on_hand_qty",
             "in_transit_qty",
             "min_order_qty",

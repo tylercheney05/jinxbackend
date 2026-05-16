@@ -1,6 +1,12 @@
 import django_filters
 
-from inventory.models import InventoryLog
+from inventory.models import InventoryItem, InventoryLog
+
+
+class InventoryItemFilter(django_filters.FilterSet):
+    class Meta:
+        model = InventoryItem
+        fields = ["is_active"]
 
 
 class InventoryLogFilter(django_filters.FilterSet):

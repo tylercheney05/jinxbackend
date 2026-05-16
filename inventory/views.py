@@ -2,7 +2,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, mixins, viewsets
 
 from core.permissions import IsSystemAdminUser
-from inventory.filters import InventoryLogFilter
+from inventory.filters import InventoryItemFilter, InventoryLogFilter
 from inventory.models import InventoryCategory, InventoryItem, InventoryLog
 from inventory.serializers import (
     InventoryCategorySerializer,
@@ -36,7 +36,8 @@ class InventoryItemViewSet(
     queryset = InventoryItem.objects.all()
     serializer_class = InventoryItemSerializer
     permission_classes = [IsSystemAdminUser]
-    filter_backends = [filters.OrderingFilter]
+    filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
+    filterset_class = InventoryItemFilter
     ordering_fields = ["name"]
     ordering = ["category__name", "name"]
 
