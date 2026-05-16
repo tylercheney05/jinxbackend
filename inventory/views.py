@@ -7,6 +7,7 @@ from inventory.models import InventoryCategory, InventoryItem, InventoryLog
 from inventory.serializers import (
     InventoryCategorySerializer,
     InventoryItemSerializer,
+    InventoryItemSerializerReadOnly,
     InventoryLogSerializer,
 )
 
@@ -26,15 +27,23 @@ class InventoryCategoryViewSet(
 
 
 class InventoryItemViewSet(
-    viewsets.GenericViewSet, mixins.CreateModelMixin, mixins.ListModelMixin
+    viewsets.GenericViewSet,
+    mixins.CreateModelMixin,
+    mixins.ListModelMixin,
+    mixins.UpdateModelMixin,
 ):
-    http_method_names = ["post", "get"]
+    http_method_names = ["post", "get", "patch"]
     queryset = InventoryItem.objects.all()
     serializer_class = InventoryItemSerializer
     permission_classes = [IsSystemAdminUser]
     filter_backends = [filters.OrderingFilter]
     ordering_fields = ["name"]
     ordering = ["category__name", "name"]
+
+    def get_serializer_class(self):
+        if self.action in ["list", "retrieve"]:
+            return InventoryItemSerializerReadOnly
+        return InventoryItemSerializer
 
 
 class InventoryLogViewSet(
