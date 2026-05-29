@@ -29,7 +29,10 @@ class MenuItem(models.Model):
                 if cup.size == "16":
                     cup_price = Decimal(WATER_16OZ_PRICE)
                 else:
-                    cup_price = Decimal(WATER_32OZ_PRICE)
+                    if self.name == "I Got A Feeling":
+                        cup_price = Decimal(3)
+                    else:
+                        cup_price = Decimal(WATER_32OZ_PRICE)
 
             price = get_flavors_price(self, cup)
             cup_prices.append(

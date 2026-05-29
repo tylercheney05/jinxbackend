@@ -98,7 +98,10 @@ class MenuItemCustomOrder(models.Model):
                 if cup.size == "16":
                     cup_price = Decimal(WATER_16OZ_PRICE)
                 else:
-                    cup_price = Decimal(WATER_32OZ_PRICE)
+                    if self.menu_item.name == "I Got A Feeling":
+                        cup_price = Decimal(3)
+                    else:
+                        cup_price = Decimal(WATER_32OZ_PRICE)
 
             if hasattr(self.menu_item, "price"):
                 price = self.menu_item.price.price * cup.conversion_factor
@@ -168,9 +171,9 @@ class CustomOrder(models.Model):
             ## TODO: REMOVE LATER
             if self.soda.name == WATER_BEVERAGE:
                 if cup.size == "16":
-                    cup_price = Decimal(2.25)
+                    cup_price = Decimal(WATER_16OZ_PRICE)
                 else:
-                    cup_price = Decimal(2.5)
+                    cup_price = Decimal(WATER_32OZ_PRICE)
 
             price = self.custom_order_custom_order_flavors.annotate(
                 quantity_price=(
