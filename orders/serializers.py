@@ -235,11 +235,14 @@ class OrderItemSerializer(serializers.ModelSerializer):
                 for flavor in custom_order_flavors:
                     try:
                         # If the flavor is already in the menu item, use that quantity
-                        quantity = menu_item_custom_order.menu_item.flavors.get(
-                            flavor=flavor
-                        ).quantity * int(cup.conversion_factor)
+                        quantity = (
+                            menu_item_custom_order.menu_item.flavors.get(
+                                flavor=flavor
+                            ).quantity
+                            * cup.conversion_factor
+                        )
                     except MenuItemFlavor.DoesNotExist:
-                        quantity = int(cup.conversion_factor)
+                        quantity = cup.conversion_factor
                     custom_order_flavor = CustomOrderFlavor.objects.create(
                         flavor_id=flavor,
                         quantity=quantity,
@@ -256,7 +259,7 @@ class OrderItemSerializer(serializers.ModelSerializer):
                 for flavor in custom_order_flavors:
                     custom_order_flavor = CustomOrderFlavor.objects.create(
                         flavor_id=flavor,
-                        quantity=int(cup.conversion_factor),
+                        quantity=cup.conversion_factor,
                     )
                     CustomOrderFlavorCustomOrder.objects.create(
                         custom_order_flavor=custom_order_flavor,

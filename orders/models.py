@@ -122,7 +122,6 @@ class MenuItemCustomOrder(models.Model):
                         F("custom_order_flavor__quantity")
                         * F("custom_order_flavor__flavor__flavor_group__price")
                     )
-                    * cup.conversion_factor
                 ).aggregate(total_sum_product=Sum("quantity_price"))
                 price = price.get("total_sum_product", 0)
             cup_prices.append(
