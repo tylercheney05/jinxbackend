@@ -24,6 +24,11 @@ from orders.models import (
 from sodas.models import Soda
 
 
+def _format_quantity(quantity):
+    """Round to one decimal place, dropping a trailing '.0' for whole numbers."""
+    return f"{round(float(quantity), 1):.1f}".rstrip("0").rstrip(".")
+
+
 class OrderSerializer(serializers.ModelSerializer):
     order_name__name = serializers.CharField(source="order_name.name", read_only=True)
 
@@ -180,7 +185,7 @@ class OrderItemSerializer(serializers.ModelSerializer):
             for flavor in obj.menu_item.menu_item.flavors.all():
                 flavors[
                     f"{'SUGAR-FREE ' if obj.low_sugar and flavor.flavor.sugar_free_available else ''}{flavor.flavor.name}"
-                ] = f"{round(flavor.quantity * obj.cup.conversion_factor, 1)} {flavor.flavor.flavor_group.get_uom_display()}{'' if flavor.quantity * obj.cup.conversion_factor == 1 else 's'}"
+                ] = f"{_format_quantity(flavor.quantity * obj.cup.conversion_factor)} {flavor.flavor.flavor_group.get_uom_display()}{'' if flavor.quantity * obj.cup.conversion_factor == 1 else 's'}"
         elif hasattr(obj, "menu_item_custom_order"):
             menu_item_custom_order_custom_order_flavors = (
                 obj.menu_item_custom_order.menu_item_custom_order.menu_item_custom_order_custom_order_flavors.all()
@@ -190,7 +195,7 @@ class OrderItemSerializer(serializers.ModelSerializer):
             ) in menu_item_custom_order_custom_order_flavors:
                 flavors[
                     f"{'SUGAR-FREE ' if obj.low_sugar and custom_order_flavor_menu_item_custom_order.custom_order_flavor.flavor.sugar_free_available else ''}{custom_order_flavor_menu_item_custom_order.custom_order_flavor.flavor.name}"
-                ] = f"{round(custom_order_flavor_menu_item_custom_order.custom_order_flavor.quantity, 1)} {custom_order_flavor_menu_item_custom_order.custom_order_flavor.flavor.flavor_group.get_uom_display()}{'' if custom_order_flavor_menu_item_custom_order.custom_order_flavor.quantity == 1 else 's'}"
+                ] = f"{_format_quantity(custom_order_flavor_menu_item_custom_order.custom_order_flavor.quantity)} {custom_order_flavor_menu_item_custom_order.custom_order_flavor.flavor.flavor_group.get_uom_display()}{'' if custom_order_flavor_menu_item_custom_order.custom_order_flavor.quantity == 1 else 's'}"
         elif hasattr(obj, "custom_order"):
             custom_order_custom_order_flavors = (
                 obj.custom_order.custom_order.custom_order_custom_order_flavors.all()
@@ -198,7 +203,7 @@ class OrderItemSerializer(serializers.ModelSerializer):
             for custom_order_custom_order_flavor in custom_order_custom_order_flavors:
                 flavors[
                     f"{'SUGAR-FREE ' if obj.low_sugar and custom_order_custom_order_flavor.custom_order_flavor.flavor else ''}{custom_order_custom_order_flavor.custom_order_flavor.flavor.name}"
-                ] = f"{round(custom_order_custom_order_flavor.custom_order_flavor.quantity, 1)} {custom_order_custom_order_flavor.custom_order_flavor.flavor.flavor_group.get_uom_display()}{'' if custom_order_custom_order_flavor.custom_order_flavor.quantity == 1 else 's'}"
+                ] = f"{_format_quantity(custom_order_custom_order_flavor.custom_order_flavor.quantity)} {custom_order_custom_order_flavor.custom_order_flavor.flavor.flavor_group.get_uom_display()}{'' if custom_order_custom_order_flavor.custom_order_flavor.quantity == 1 else 's'}"
         else:
             flavors = {}
         return flavors
