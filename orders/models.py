@@ -1,3 +1,4 @@
+import math
 from decimal import Decimal
 
 from django.conf import settings
@@ -8,7 +9,12 @@ from django.utils import timezone
 
 from cups.models import Cup
 from orders.managers import OrderManager
-from sodas.constants import WATER_16OZ_PRICE, WATER_32OZ_PRICE, WATER_BEVERAGE
+from sodas.constants import (
+    WATER_16OZ_PRICE,
+    WATER_24OZ_PRICE,
+    WATER_32OZ_PRICE,
+    WATER_BEVERAGE,
+)
 
 
 class Order(models.Model):
@@ -97,6 +103,8 @@ class MenuItemCustomOrder(models.Model):
             if self.soda.name == WATER_BEVERAGE:
                 if cup.size == "16":
                     cup_price = Decimal(WATER_16OZ_PRICE)
+                if cup.size == "24":
+                    cup_price = Decimal(WATER_24OZ_PRICE)
                 else:
                     if self.menu_item.name == "I Got A Feeling":
                         cup_price = Decimal(3)
@@ -118,7 +126,8 @@ class MenuItemCustomOrder(models.Model):
                     "id": cup.id,
                     "size": cup.size,
                     "size__display": cup.get_size_display(),
-                    "price": cup_price + price,
+                    "price": math.ceil((cup_price + price) / Decimal("0.25"))
+                    * Decimal("0.25"),
                 }
             )
         return cup_prices
@@ -172,6 +181,8 @@ class CustomOrder(models.Model):
             if self.soda.name == WATER_BEVERAGE:
                 if cup.size == "16":
                     cup_price = Decimal(WATER_16OZ_PRICE)
+                if cup.size == "24":
+                    cup_price = Decimal(WATER_24OZ_PRICE)
                 else:
                     cup_price = Decimal(WATER_32OZ_PRICE)
 
@@ -188,7 +199,8 @@ class CustomOrder(models.Model):
                     "id": cup.id,
                     "size": cup.size,
                     "size__display": cup.get_size_display(),
-                    "price": cup_price + flavors_price,
+                    "price": math.ceil((cup_price + flavors_price) / Decimal("0.25"))
+                    * Decimal("0.25"),
                 }
             )
         return cup_prices

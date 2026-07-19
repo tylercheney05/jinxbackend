@@ -1,3 +1,4 @@
+import math
 from decimal import Decimal
 
 from django.db import models
@@ -5,7 +6,12 @@ from django.db import models
 from cups.models import Cup
 from menuitems.managers import MenuItemFlavorManager
 from menuitems.utils import get_flavors_price
-from sodas.constants import WATER_16OZ_PRICE, WATER_32OZ_PRICE, WATER_BEVERAGE
+from sodas.constants import (
+    WATER_16OZ_PRICE,
+    WATER_24OZ_PRICE,
+    WATER_32OZ_PRICE,
+    WATER_BEVERAGE,
+)
 
 
 class MenuItem(models.Model):
@@ -21,13 +27,15 @@ class MenuItem(models.Model):
     @property
     def cup_prices(self):
         cup_prices = list()
-        for cup in Cup.objects.all():
+        for cup in Cup.objects.all().order_by("size"):
             cup_price = cup.price
 
             ## TODO: REMOVE LATER
             if self.soda.name == WATER_BEVERAGE:
                 if cup.size == "16":
                     cup_price = Decimal(WATER_16OZ_PRICE)
+                if cup.size == "24":
+                    cup_price = Decimal(WATER_24OZ_PRICE)
                 else:
                     if self.name == "I Got A Feeling":
                         cup_price = Decimal(3)
@@ -42,7 +50,8 @@ class MenuItem(models.Model):
                         "value": cup.size,
                         "display": cup.get_size_display(),
                     },
-                    "price": cup_price + price,
+                    "price": math.ceil((cup_price + price) / Decimal("0.25"))
+                    * Decimal("0.25"),
                 }
             )
         return cup_prices

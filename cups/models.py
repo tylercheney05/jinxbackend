@@ -12,5 +12,10 @@ class Cup(models.Model):
     price = models.DecimalField(max_digits=5, decimal_places=2)
     conversion_factor = models.DecimalField(max_digits=5, decimal_places=2)
 
+    class Meta:
+        verbose_name = "Cup"
+        verbose_name_plural = "Cups"
+        ordering = ["size"]
+
     def __str__(self):
         return self.size
