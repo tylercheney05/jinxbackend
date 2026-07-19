@@ -34,7 +34,7 @@ class MenuItem(models.Model):
             if self.soda.name == WATER_BEVERAGE:
                 if cup.size == "16":
                     cup_price = Decimal(WATER_16OZ_PRICE)
-                if cup.size == "24":
+                elif cup.size == "24":
                     if self.name == "I Got A Feeling":
                         cup_price = Decimal(2.75)
                     else:
