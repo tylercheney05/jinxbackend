@@ -4,6 +4,7 @@ from django.db import models
 class Cup(models.Model):
     size_choices = [
         ("16", "16 oz"),
+        ("24", "24 oz"),
         ("32", "32 oz"),
     ]
 
