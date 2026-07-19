@@ -213,7 +213,9 @@ class CustomOrderFlavor(models.Model):
     flavor = models.ForeignKey(
         "flavors.Flavor", on_delete=models.CASCADE, related_name="custom_order_flavors"
     )
-    quantity = models.PositiveIntegerField()
+    quantity = models.DecimalField(
+        max_digits=5, decimal_places=1, validators=[MinValueValidator(0)]
+    )
 
     def __str__(self):
         return f"Custom Order {self.id} {self.flavor.name} {self.quantity}"
