@@ -1,3 +1,6 @@
+import math
+from decimal import Decimal
+
 from django.db import transaction
 from rest_framework import serializers
 
@@ -119,13 +122,26 @@ class OrderItemSerializer(serializers.ModelSerializer):
 
             if discount_percent_off:
                 if discount_cup_size and discount_cup_size != obj.cup:
-                    return found_object["price"]
-                return found_object["price"] * (1 - discount_percent_off)
+                    return (
+                        math.ceil(found_object["price"] / Decimal("0.25"))
+                        * Decimal("0.25")
+                    )
+                return (
+                    math.ceil(
+                        found_object["price"]
+                        * (1 - discount_percent_off)
+                        / Decimal("0.25")
+                    )
+                    * Decimal("0.25")
+                )
             elif discount_price:
                 if discount_cup_size and discount_cup_size != obj.cup:
-                    return found_object["price"]
-                return discount_price
-            return found_object["price"]
+                    return (
+                        math.ceil(found_object["price"] / Decimal("0.25"))
+                        * Decimal("0.25")
+                    )
+                return math.ceil(discount_price / Decimal("0.25")) * Decimal("0.25")
+            return math.ceil(found_object["price"] / Decimal("0.25")) * Decimal("0.25")
         return None
 
     def get_cup__size__display(self, obj):
