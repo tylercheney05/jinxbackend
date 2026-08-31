@@ -1,9 +1,11 @@
-from rest_framework import mixins, viewsets
+from rest_framework import mixins, status, views, viewsets
+from rest_framework.permissions import AllowAny
+from rest_framework.response import Response
 
 from core.mixins import AutocompleteViewSetMixin
 from core.permissions import IsSystemAdminUserOrIsStaffUserReadOnly
-from locations.models import Location
-from locations.serializers import LocationSerializer
+from locations.models import Device, Location
+from locations.serializers import DeviceAuthResponseSerializer, LocationSerializer
 
 
 class LocationViewSet(
@@ -18,3 +20,27 @@ class LocationViewSet(
     permission_classes = [IsSystemAdminUserOrIsStaffUserReadOnly]
     serializer_class = LocationSerializer
     autocomplete_fields = ["id", "name"]
+
+
+class DeviceAuthView(views.APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        token = request.data.get("token")
+        if not token:
+            return Response(
+                {"error": "Token is required"}, status=status.HTTP_400_BAD_REQUEST
+            )
+
+        try:
+            device = Device.objects.select_related("location").get(
+                token=token, is_active=True
+            )
+        except Device.DoesNotExist:
+            return Response(
+                {"error": "Invalid or inactive device token"},
+                status=status.HTTP_401_UNAUTHORIZED,
+            )
+
+        serializer = DeviceAuthResponseSerializer(device)
+        return Response(serializer.data, status=status.HTTP_200_OK)
